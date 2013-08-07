@@ -19,5 +19,8 @@ local.properties
 .classpath
 .project
 
+# Eclipse setting files
+.settings/
+
 # Ignore target output
-target/*
+target/
