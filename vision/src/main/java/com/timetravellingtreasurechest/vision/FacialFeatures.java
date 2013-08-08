@@ -33,21 +33,18 @@ public class FacialFeatures {
 	private static CascadeClassifier nose_cascade;
 	
 	private Mat image;
-	private Mat gray_image;
 	
 	private Rect face;
 	private Rect leye;
 	private Rect reye;
 	private Rect mouth;
-	private Rect nose;
-
+	private Rect nose;	
 	
-	
-    /*public static void main(String[] args) {   	
+    public static void main(String[] args) {   	
         for (int i = 0; i < args.length; i++) {
         	new FacialFeatures(args[i]);
         }
-    }*/
+    }
     
     public FacialFeatures(String imageFile) {
     	System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -72,12 +69,13 @@ public class FacialFeatures {
     	}
     	
     	if (findFeatures() == false) {
-    		System.out.println("error: no faces detected in "+ imageFile + "\n");
+    		System.out.println("error: no faces detected in " + imageFile + "\n");
     		return;
     	}
     	
     	//write image with boxes to file
-        Highgui.imwrite("cv_" + imageFile, image);
+    	if (OUTPUT_IMAGE)
+    		Highgui.imwrite("cv_" + imageFile, image);
         
         extractFeatures();
     }
@@ -88,7 +86,7 @@ public class FacialFeatures {
     
     private boolean findFeatures() {                 
         // opencv detection works 234234324x faster on grayscale images
-        gray_image = new Mat();       
+        Mat gray_image = new Mat();       
         Imgproc.cvtColor(image, gray_image, Imgproc.COLOR_RGB2GRAY);
         Imgproc.equalizeHist(gray_image, gray_image);        
 
