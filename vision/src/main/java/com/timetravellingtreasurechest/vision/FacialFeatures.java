@@ -3,22 +3,13 @@ package com.timetravellingtreasurechest.vision;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.css.Rect;
-
-import com.googlecode.javacv.*;
-import com.googlecode.javacpp.*;
-import com.googlecode.javacpp.properties.*;
 import com.googlecode.javacv.cpp.*;
+import com.googlecode.javacv.cpp.opencv_core.CvRect;
 import com.googlecode.javacv.cpp.opencv_objdetect.CascadeClassifier;
+
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_highgui.*;
-import static com.googlecode.javacv.cpp.opencv_imgproc.*;
-import com.googlecode.javacpp.annotation.*;
-import com.googlecode.javacv.procamcalib.*;
-import com.googlecode.javacv.procamcalib.icons.*;
-import com.googlecode.javacv.procamtracker.*;
-import com.googlecode.javacv.procamtracker.icons.*;
 
 public class FacialFeatures {
 	
@@ -45,12 +36,6 @@ public class FacialFeatures {
 	private CvRect reye;
 	private CvRect mouth;
 	private CvRect nose;	
-	
-    public static void main(String[] args) {   	
-        for (int i = 0; i < args.length; i++) {
-        	new FacialFeatures(args[i]);
-        }
-    }
     
     public FacialFeatures(String imageFile) {
     	//System.loadLibrary(opencv_core.CV_NATIVE_LIBRARY_NAME);
@@ -103,18 +88,30 @@ public class FacialFeatures {
         	return false;
         
         CvRect faceROI = new CvRect(face.x(), face.y(), face.width(), face.height());
-        CvMat face_crop_image = new CvMat(gray_image, faceROI);
-	
-		  // separate regions of interests to reduce search area
+        CvMat face_crop_image = gray_image.clone();
+        cvSetImageROI(face_crop_image.asIplImage(), faceROI);
+        //CvMat face_crop_image = new CvMat(gray_image, faceROI);
+        
+        // separate regions of interests to reduce search area
         CvRect upperFaceROI = new CvRect(face.x(),                face.y(),                 face.width(),   face.height()/2);
 		CvRect lowerFaceROI = new CvRect(face.x(),                face.y() + face.height()/2, face.width(),   face.height()/2);
 		CvRect leftFaceROI =  new CvRect(face.x(),                face.y(),                 face.width()/2, face.height());
 		CvRect rightFaceROI = new CvRect(face.x() + face.width()/2, face.y(),                 face.width()/2, face.height());
-			  
-		CvMat upper_face_crop_image = new CvMat(gray_image, upperFaceROI);
+		
+		CvMat upper_face_crop_image = face_crop_image.clone();
+		CvMat lower_face_crop_image = face_crop_image.clone();
+		CvMat left_face_crop_image = face_crop_image.clone();
+		CvMat right_face_crop_image = face_crop_image.clone();
+		
+		cvSetImageROI(upper_face_crop_image.asIplImage(), upperFaceROI);
+		cvSetImageROI(lower_face_crop_image.asIplImage(), lowerFaceROI);
+		cvSetImageROI(left_face_crop_image.asIplImage(), leftFaceROI);
+		cvSetImageROI(right_face_crop_image.asIplImage(), rightFaceROI);
+				
+		/*CvMat upper_face_crop_image = new CvMat(gray_image, upperFaceROI);
 		CvMat lower_face_crop_image = new CvMat(gray_image, lowerFaceROI);
 		CvMat left_face_crop_image =  new CvMat(gray_image, leftFaceROI);
-		CvMat right_face_crop_image = new CvMat(gray_image, rightFaceROI);
+		CvMat right_face_crop_image = new CvMat(gray_image, rightFaceROI);*/
 		
 		if (LEYE)
 		    leye = detectFeature(leye_cascade, left_face_crop_image, null);
@@ -142,13 +139,13 @@ public class FacialFeatures {
     // returns Rect object containing feature
     private CvRect detectFeature(CascadeClassifier casc, CvMat image,  CvSize min) {
     	//CvMatOfRect rects = new CvMatOfRect();
-    	List<CvRect> detected = new ArrayList<CvRect>();
+    	List<CvRect> detected = new ArrayList<CvRect>();    	
     	if (min == null)
     		min = new CvSize(1,1);
     	
         for (int low = 3, high = 150, mid; detected.size() != 1 && low <= high;) {
           mid = (low + high) / 2;
-          casc.detectMultiScale(image, detected, 1.1, mid, Objdetect.CASCADE_SCALE_IMAGE, min, new CvSize(image.rows(),image.cols()));
+          casc.detectMultiScale((CvArr) image, (CvRect) detected, 1.1, mid, opencv_objdetect.CV_HAAR_SCALE_IMAGE, min, new CvSize(image.rows(),image.cols()));
           
           //detected = rects.toList();
           if (detected.size() == 0)
