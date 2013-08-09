@@ -22,8 +22,7 @@ public class FacialFeatures {
 	
 	private static final boolean OUTPUT_IMAGE = true; // output test image to file including boxes, only for testing. not included in final project
 	
-	private 
-	static CascadeClassifier face_cascade;
+	private static CascadeClassifier face_cascade;
 	private static CascadeClassifier leye_cascade;
 	private static CascadeClassifier reye_cascade;
 	private static CascadeClassifier mouth_cascade;
@@ -35,10 +34,20 @@ public class FacialFeatures {
 	private CvRect leye;
 	private CvRect reye;
 	private CvRect mouth;
-	private CvRect nose;	
+	private CvRect nose;
+	
+	private float headWidth;
+	private float foreheadSize;
+	private float eyeSize;
+	private float eyeSpace;
+	private float noseSize;
+	private float noseWidth;
+	private float mouthSize;
+	private float mouthWidth;
+	private float chinHeight;
     
     public FacialFeatures(String imageFile) {
-    	//System.loadLibrary(opencv_core.CV_NATIVE_LIBRARY_NAME);
+    	//System.loadLibrary(opencv_core.windowsx64Linkpath);
     	
     	// load haarcascades xml files, doing this here to avoid link errors
     	if (face_cascade == null)
