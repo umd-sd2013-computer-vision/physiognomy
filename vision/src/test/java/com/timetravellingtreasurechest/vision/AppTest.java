@@ -11,6 +11,6 @@ import org.junit.runners.JUnit4;
 public class AppTest {
     @Test
     public void testApp() {
-        App.main(null);
+        App.main(new String[]{"images/face.jpg"});
     }
 }
