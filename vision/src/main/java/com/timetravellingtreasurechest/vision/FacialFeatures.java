@@ -85,10 +85,12 @@ public class FacialFeatures {
     }
     
     private boolean findFeatures() {                 
-        // opencv detection works 234234324x faster on grayscale images
-    	CvMat gray_image = new CvMat();       
-        cvCvtColor(image, gray_image, CV_RGB2GRAY);
-        cvEqualizeHist(gray_image, gray_image);        
+        // opencv detection works 234234324x faster on grayscale images 
+    	CvMat gray_image = CvMat.create(image.rows(), image.cols(),CV_8U,1);
+    	cvCvtColor(image, gray_image, CV_RGB2GRAY );
+        cvEqualizeHist(gray_image, gray_image); 
+        
+        opencv_highgui.cvSaveImage("out", gray_image.asIplImage());
 
         // detect face first to create roi to search for facial features, can greatly increase speed (esp for large images)
         face = detectFeature(face_cascade, gray_image, new CvSize(gray_image.cols()/5, gray_image.rows()/5));
