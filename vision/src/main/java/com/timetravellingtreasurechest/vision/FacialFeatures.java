@@ -3,13 +3,16 @@ package com.timetravellingtreasurechest.vision;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.*;
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
 import com.googlecode.javacv.cpp.opencv_objdetect.CascadeClassifier;
+import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_highgui.*;
+import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
 
 public class FacialFeatures {
 	
@@ -22,13 +25,14 @@ public class FacialFeatures {
 	
 	private static final boolean OUTPUT_IMAGE = true; // output test image to file including boxes, only for testing. not included in final project
 	
-	private static CascadeClassifier face_cascade;
-	private static CascadeClassifier leye_cascade;
-	private static CascadeClassifier reye_cascade;
-	private static CascadeClassifier mouth_cascade;
-	private static CascadeClassifier nose_cascade;
+	private static CvHaarClassifierCascade face_cascade;
+	private static CvHaarClassifierCascade leye_cascade;
+	private static CvHaarClassifierCascade reye_cascade;
+	private static CvHaarClassifierCascade mouth_cascade;
+	private static CvHaarClassifierCascade nose_cascade;
 	
 	private CvMat image;
+	private static final CvMemStorage storage = CvMemStorage.create();
 	
 	private CvRect face;
 	private CvRect leye;
@@ -51,15 +55,15 @@ public class FacialFeatures {
     	
     	// load haarcascades xml files, doing this here to avoid link errors
     	if (face_cascade == null)
-    		face_cascade = new CascadeClassifier("src\\haarcascades\\haarcascade_frontalface_alt.xml");
+    		face_cascade = new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\haarcascade_frontalface_alt.xml"));
     	if (leye_cascade == null)
-    		leye_cascade = new CascadeClassifier("src\\haarcascades\\haarcascade_mcs_lefteye.xml");
+    		leye_cascade = new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\haarcascade_mcs_lefteye.xml"));
     	if (reye_cascade == null)
-    		reye_cascade = new CascadeClassifier("src\\haarcascades\\haarcascade_mcs_righteye.xml");
+    		reye_cascade = new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\haarcascade_mcs_righteye.xml"));
     	if (mouth_cascade == null)
-    		mouth_cascade = new CascadeClassifier("src\\haarcascades\\haarcascade_mcs_mouth.xml");
+    		mouth_cascade = new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\haarcascade_mcs_mouth.xml"));
     	if (nose_cascade == null)
-    		nose_cascade = new CascadeClassifier("src\\haarcascades\\haarcascade_mcs_nose.xml");
+    		nose_cascade = new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\haarcascade_mcs_nose.xml"));
     	
     	image = cvLoadImageM(imageFile, CV_LOAD_IMAGE_COLOR);
     	
@@ -88,51 +92,48 @@ public class FacialFeatures {
         // opencv detection works 234234324x faster on grayscale images 
     	CvMat gray_image = CvMat.create(image.rows(), image.cols(),CV_8U,1);
     	cvCvtColor(image, gray_image, CV_RGB2GRAY );
-        cvEqualizeHist(gray_image, gray_image); 
+        cvEqualizeHist(gray_image, gray_image);         
         
-        opencv_highgui.cvSaveImage("out", gray_image.asIplImage());
-
         // detect face first to create roi to search for facial features, can greatly increase speed (esp for large images)
-        face = detectFeature(face_cascade, gray_image, new CvSize(gray_image.cols()/5, gray_image.rows()/5));
+        face = detectFeature(face_cascade, gray_image);    
 
         if (face == null)
         	return false;
         
         CvRect faceROI = new CvRect(face.x(), face.y(), face.width(), face.height());
-        CvMat face_crop_image = gray_image.clone();
-        cvSetImageROI(face_crop_image.asIplImage(), faceROI);
-        //CvMat face_crop_image = new CvMat(gray_image, faceROI);
+        CvMat face_crop_image = FacialFeatures.crop(gray_image, faceROI);
         
         // separate regions of interests to reduce search area
-        CvRect upperFaceROI = new CvRect(face.x(),                face.y(),                 face.width(),   face.height()/2);
-		CvRect lowerFaceROI = new CvRect(face.x(),                face.y() + face.height()/2, face.width(),   face.height()/2);
-		CvRect leftFaceROI =  new CvRect(face.x(),                face.y(),                 face.width()/2, face.height());
-		CvRect rightFaceROI = new CvRect(face.x() + face.width()/2, face.y(),                 face.width()/2, face.height());
+        CvRect upperFaceROI = new CvRect(face.x(),                  face.y(),                   face.width(),   face.height()/2);
+		CvRect lowerFaceROI = new CvRect(face.x(),                  face.y() + face.height()/2, face.width(),   face.height()/2);
+		CvRect leftFaceROI =  new CvRect(face.x(),                  face.y(),                   face.width()/2, face.height());
+		CvRect rightFaceROI = new CvRect(face.x() + face.width()/2, face.y(),                   face.width()/2, face.height());
 		
-		CvMat upper_face_crop_image = face_crop_image.clone();
-		CvMat lower_face_crop_image = face_crop_image.clone();
-		CvMat left_face_crop_image = face_crop_image.clone();
-		CvMat right_face_crop_image = face_crop_image.clone();
+		CvMat upper_face_crop_image = FacialFeatures.crop(gray_image,upperFaceROI);
+		CvMat lower_face_crop_image = FacialFeatures.crop(gray_image,lowerFaceROI);
+		CvMat left_face_crop_image = FacialFeatures.crop(gray_image,leftFaceROI);
+		CvMat right_face_crop_image = FacialFeatures.crop(gray_image,rightFaceROI);		
 		
-		cvSetImageROI(upper_face_crop_image.asIplImage(), upperFaceROI);
-		cvSetImageROI(lower_face_crop_image.asIplImage(), lowerFaceROI);
-		cvSetImageROI(left_face_crop_image.asIplImage(), leftFaceROI);
-		cvSetImageROI(right_face_crop_image.asIplImage(), rightFaceROI);
-				
-		/*CvMat upper_face_crop_image = new CvMat(gray_image, upperFaceROI);
-		CvMat lower_face_crop_image = new CvMat(gray_image, lowerFaceROI);
-		CvMat left_face_crop_image =  new CvMat(gray_image, leftFaceROI);
-		CvMat right_face_crop_image = new CvMat(gray_image, rightFaceROI);*/
+		CanvasFrame outu = new CanvasFrame("Some Title");
+		outu.showImage(upper_face_crop_image.asIplImage());
+		
+		CanvasFrame outl = new CanvasFrame("Some Title");
+		outl.showImage(lower_face_crop_image.asIplImage());
+		
+		CanvasFrame outle = new CanvasFrame("Some Title");
+		outle.showImage(left_face_crop_image.asIplImage());
+		
+		CanvasFrame outri = new CanvasFrame("Some Title");
+		outri.showImage(right_face_crop_image.asIplImage());
 		
 		if (LEYE)
-		    leye = detectFeature(leye_cascade, left_face_crop_image, null);
+		    leye = detectFeature(leye_cascade, left_face_crop_image);
 		if (REYE)
-		    reye = detectFeature(reye_cascade, right_face_crop_image, null);
+		    reye = detectFeature(reye_cascade, right_face_crop_image);
 		if (MOUTH)
-		    mouth = detectFeature(mouth_cascade, lower_face_crop_image, null);
+		    mouth = detectFeature(mouth_cascade, lower_face_crop_image);
 		if (NOSE)
-		    nose = detectFeature(nose_cascade, face_crop_image, null);
-		
+		    nose = detectFeature(nose_cascade, face_crop_image);
 		
 		if (OUTPUT_IMAGE) {
 			putRects(image, face, 0, 0); 							// face rectangle
@@ -140,6 +141,9 @@ public class FacialFeatures {
 			putRects(image, reye, face.x() + face.width()/2, face.y()); 	// right eye rectangle
 		    putRects(image, mouth, face.x(), face.y() + face.height()/2); // mouth rectangle
 		    putRects(image, nose, face.x(), face.y()); 					// nose rectangle
+		    
+		    CanvasFrame out = new CanvasFrame("Some Title");
+			out.showImage(image.asIplImage());
 		}
 		
 		return true;
@@ -148,26 +152,23 @@ public class FacialFeatures {
     // detect feature (indicated by casc parameter) from image
     // uses simple binary search to find a single object (with the minBoxes as the search term)
     // returns Rect object containing feature
-    private CvRect detectFeature(CascadeClassifier casc, CvMat image,  CvSize min) {
-    	//CvMatOfRect rects = new CvMatOfRect();
-    	List<CvRect> detected = new ArrayList<CvRect>();    	
-    	if (min == null)
-    		min = new CvSize(1,1);
+    private CvRect detectFeature(CvHaarClassifierCascade casc, CvMat image) {
+    	cvClearMemStorage(storage);
+    	CvSeq detected = new CvSeq();
     	
-        for (int low = 3, high = 150, mid; detected.size() != 1 && low <= high;) {
+        for (int low = 3, high = 150, mid; detected.total() != 1 && low <= high;) {
           mid = (low + high) / 2;
-          casc.detectMultiScale((CvArr) image, (CvRect) detected, 1.1, mid, opencv_objdetect.CV_HAAR_SCALE_IMAGE, min, new CvSize(image.rows(),image.cols()));
+          detected = cvHaarDetectObjects((CvArr) image, casc, storage, 1.1, mid, opencv_objdetect.CV_HAAR_SCALE_IMAGE);
           
-          //detected = rects.toList();
-          if (detected.size() == 0)
+          if (detected.total() == 0)
             high = mid - 1;
-          else if (detected.size() > 1)
+          else if (detected.total() > 1)
             low = mid + 1;
         }
         
-        if (detected.size() == 0)
+        if (detected.total() == 0)
         	return null;
-        return detected.get(0);
+        return new CvRect(cvGetSeqElem(detected, 0));
     }
     
     // draw rects on image relative to offsets given (for roi placement)
@@ -179,6 +180,16 @@ public class FacialFeatures {
     	CvPoint pt1 = new CvPoint(rect.x() + rect.width() + offset_x, rect.y() + rect.height() + offset_y);
 	    CvPoint pt2 = new CvPoint(rect.x() + offset_x, rect.y() + offset_y);
 	    
-	    cvRectangle(image, pt1, pt2, new CvScalar(0,255,0,0),1,8,0);
+	    cvRectangle(image, pt1, pt2, new CvScalar(0,255,0,0), 1, 8, 0);
 	}
+    
+    private static CvMat crop(CvMat src, CvRect roi){
+    	IplImage srcIpl = src.asIplImage();
+        IplImage cropped = cvCreateImage(cvSize(roi.width(),roi.height()), srcIpl.depth(), srcIpl.nChannels());
+        
+        cvSetImageROI(srcIpl, roi);
+        cvCopy(srcIpl, cropped );
+        cvResetImageROI(srcIpl);
+        return cropped.asCvMat();
+    }
 }
