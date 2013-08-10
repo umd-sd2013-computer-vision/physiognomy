@@ -47,7 +47,7 @@ public class FacialFeatures {
 		}
 	}
 
-	public List<FacialFeature> extractFeatures() {
+	public List<FacialFeature> getFeatures() {
 		return features;
 	}
 
@@ -74,11 +74,21 @@ public class FacialFeatures {
 		mouth = detectFeature(mouth_cascade, FacialFeatures.crop(gray_image, lowerFace));
 		nose = detectFeature(nose_cascade, FacialFeatures.crop(gray_image, face));
 		
-		features.add(new FacialFeature(face, new CvPoint(0,0)));
-		features.add(new FacialFeature(leye, new CvPoint(leftFace.x(), leftFace.y())));
-		features.add(new FacialFeature(reye, new CvPoint(rightFace.x(), rightFace.y())));
-		features.add(new FacialFeature(mouth, new CvPoint(lowerFace.x(), lowerFace.y())));
-		features.add(new FacialFeature(nose, new CvPoint(face.x(), face.y())));
+		// realign rects from roi x,y coords -> image x,y coords
+		leye.x(leye.x() + leftFace.x());
+		leye.y(leye.y() + leftFace.y());
+		reye.x(reye.x() + rightFace.x());
+		reye.y(reye.y() + rightFace.y());
+		mouth.x(mouth.x() + lowerFace.x());
+		mouth.y(mouth.y() + lowerFace.y());
+		nose.x(nose.x() + face.x());
+		nose.y(nose.y() + face.y());
+		
+		features.add(new FacialFeature(face));
+		features.add(new FacialFeature(leye));
+		features.add(new FacialFeature(reye));
+		features.add(new FacialFeature(mouth));
+		features.add(new FacialFeature(nose));
 
 		return true;
 	}

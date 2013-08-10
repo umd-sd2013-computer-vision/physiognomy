@@ -19,10 +19,10 @@ public class App {
     			return;
     		}
         	
-        	List<FacialFeature> features = new FacialFeatures(image).extractFeatures();
+        	List<FacialFeature> features = new FacialFeatures(image).getFeatures();
         	
         	for(FacialFeature f : features) 
-        		putRects(image, f.boundingBox, f.offset.x(), f.offset.y()); // face rectangle
+        		putRects(image, f.boundingBox); // face rectangle
         	
         	try {
         		CanvasFrame canvas = new CanvasFrame("Face with boxes");
@@ -38,13 +38,10 @@ public class App {
 	
 	// draw rects on image relative to offsets given (for roi placement)
 	// only used for testing (if OUTPUT_IMAGE is set), not for final project
-	public static void putRects(CvMat image, CvRect rect, int offset_x, int offset_y) {
+	public static void putRects(CvMat image, CvRect rect) {
 		if (rect == null)
 			return;
 
-		CvPoint pt1 = new CvPoint(rect.x() + offset_x, rect.y() + offset_y);
-		CvPoint pt2 = new CvPoint(rect.x() + rect.width() + offset_x, rect.y() + rect.height() + offset_y);
-
-		cvRectangle(image, pt1, pt2, new CvScalar(0, 255, 0, 0), 1, 8, 0);
+		cvRectangle(image, new CvPoint(rect.x(), rect.y()), new CvPoint(rect.x() + rect.width(), rect.y() + rect.height()), new CvScalar(0, 255, 0, 0), 1, 8, 0);
 	}
 }
