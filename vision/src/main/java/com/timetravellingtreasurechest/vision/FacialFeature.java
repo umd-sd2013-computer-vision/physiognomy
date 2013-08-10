@@ -1,14 +1,20 @@
 package com.timetravellingtreasurechest.vision;
 
-import java.awt.Point;
 
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
 
 public class FacialFeature {
-	public FacialFeature(CvRect boundingBox, Point offset) {
-		this.boundingBox = boundingBox;
-		this.offset = offset;
-	}
+	
 	public CvRect boundingBox;
-	public Point offset;
+	public CvPoint offset;
+	
+	public FacialFeature(CvRect boundingBox, CvPoint offset) {
+		this.boundingBox = boundingBox;
+		
+		if (boundingBox == null) // feature was not detected
+			this.offset = new CvPoint(0,0);
+		else
+			this.offset = offset;
+	}
 }
