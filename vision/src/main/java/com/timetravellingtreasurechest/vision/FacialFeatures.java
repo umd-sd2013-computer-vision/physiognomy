@@ -36,6 +36,7 @@ public class FacialFeatures {
 	public double mouthWidth;
 
 	public FacialFeatures(CvMat image) {
+		if(image == null) return;
 		this.image = image;
 
 		if (findFeatures() == false || face.width() == 0 || face.height() == 0) {
