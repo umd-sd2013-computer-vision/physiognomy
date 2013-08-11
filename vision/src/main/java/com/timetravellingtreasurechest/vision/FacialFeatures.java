@@ -31,8 +31,10 @@ public class FacialFeatures {
 	public double eyeSize;
 	public double eyeSpace;
 	public double noseSize;
+	public double noseHeight;
 	public double noseWidth;
 	public double mouthSize;
+	public double mouthHeight;
 	public double mouthWidth;
 
 	public FacialFeatures(CvMat image) {
@@ -69,17 +71,36 @@ public class FacialFeatures {
 		else // if either eye was not found, we cannot find spacing
 			eyeSpace = 0.0;		
 
-		// nose size (area) relative to face size (area)
-		noseSize = cvRectArea(nose) / cvRectArea(face);
+		
+		if (nose != null) {
+			// nose size (area) relative to face size (area)
+			noseSize = cvRectArea(nose) / cvRectArea(face);
+			
+			// nose height relative to face height
+			noseHeight = (double) nose.height() / face.height();
+			
+			// nose width relative to face width
+			noseWidth = (double) nose.width() / face.width();
+		} else {
+			noseSize = 0.0;
+			noseWidth = 0.0;
+		}
 
-		// nose width relative to face width
-		noseWidth = (double) nose.width() / face.width();
-
-		// mouth size (area) relative to face size (area)
-		mouthSize = cvRectArea(mouth) / cvRectArea(face);
-
-		// mouth width relative to face width
-		mouthWidth = (double) mouth.width() / face.width();
+		if (mouth != null) {
+			// mouth size (area) relative to face size (area)
+			mouthSize = cvRectArea(mouth) / cvRectArea(face);
+	
+			// mouth height relative to face height
+			mouthHeight = (double) mouth.height() / face.height();
+		
+			// mouth width relative to face width
+			mouthWidth = (double) mouth.width() / face.width();
+		} else {
+			mouthSize = 0.0;
+			mouthHeight = 0.0;
+			mouthWidth = 0.0;
+		}
+		
 	}
 
 	public List<FacialFeature> getFeatures() {

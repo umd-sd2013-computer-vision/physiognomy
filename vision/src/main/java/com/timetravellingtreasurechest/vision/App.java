@@ -13,11 +13,12 @@ public class App {
 		FacialFeatures current;
 
         for (int i = 0; i < args.length; i++) {
+        	
         	CvMat image = cvLoadImageM(args[i], CV_LOAD_IMAGE_COLOR);
         	if (image.size() == 0) {
     			System.out.println("error: cannot open " + image + "\n");
     			return;
-    		}
+        	}
         	
         	current = new FacialFeatures(image);
         	
@@ -31,8 +32,10 @@ public class App {
 			System.out.println("\teyeSize: " + current.eyeSize);
 			System.out.println("\teyeSpace: " + current.eyeSpace);
 			System.out.println("\tnoseSize: " + current.noseSize);
+			System.out.println("\tnoseHeight: " + current.noseHeight);
 			System.out.println("\tnoseWidth: " + current.noseWidth);
 			System.out.println("\tmouthSize: " + current.mouthSize);
+			System.out.println("\tmouthHeight: " + current.mouthHeight);
 			System.out.println("\tmouthWidth: " + current.mouthWidth);
 			System.out.println();
         	
