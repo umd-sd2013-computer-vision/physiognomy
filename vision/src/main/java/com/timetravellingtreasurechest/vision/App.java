@@ -11,6 +11,7 @@ import com.googlecode.javacv.CanvasFrame;
 public class App {
 	public static void main(String[] args) {   	
 		FacialFeatures current;
+		ReportData report;
 
         for (int i = 0; i < args.length; i++) {
         	
@@ -28,16 +29,19 @@ public class App {
         		putRects(image, f.boundingBox); // face rectangle
         	
         	System.out.println(args[i] + ": ");
-			System.out.println("\tforeheadSize: " + current.foreheadHeight);
-			System.out.println("\teyeSize: " + current.eyeSize);
-			System.out.println("\teyeSpace: " + current.eyeSpace);
-			System.out.println("\tnoseSize: " + current.noseSize);
-			System.out.println("\tnoseHeight: " + current.noseHeight);
-			System.out.println("\tnoseWidth: " + current.noseWidth);
-			System.out.println("\tmouthSize: " + current.mouthSize);
-			System.out.println("\tmouthHeight: " + current.mouthHeight);
-			System.out.println("\tmouthWidth: " + current.mouthWidth);
-			System.out.println();
+//			System.out.println("\tforeheadHeight: " + current.foreheadHeight);
+//			System.out.println("\teyeSize: " + current.eyeSize);
+//			System.out.println("\teyeSpace: " + current.eyeSpace);
+//			System.out.println("\tnoseSize: " + current.noseSize);
+//			System.out.println("\tnoseHeight: " + current.noseHeight);
+//			System.out.println("\tnoseWidth: " + current.noseWidth);
+//			System.out.println("\tmouthSize: " + current.mouthSize);
+//			System.out.println("\tmouthHeight: " + current.mouthHeight);
+//			System.out.println("\tmouthWidth: " + current.mouthWidth);
+//			System.out.println();
+			
+			report = new ReportData(current);
+			System.out.println(report.getReportText());
         	
         	try {
         		CanvasFrame canvas = new CanvasFrame("Face with boxes");
