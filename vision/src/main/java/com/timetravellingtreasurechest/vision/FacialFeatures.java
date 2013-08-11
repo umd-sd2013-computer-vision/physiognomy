@@ -27,30 +27,65 @@ public class FacialFeatures {
 	private CvRect mouth;
 	private CvRect nose;
 
-	private float headWidth;
-	private float foreheadSize;
-	private float eyeSize;
-	private float eyeSpace;
-	private float noseSize;
-	private float noseWidth;
-	private float mouthSize;
-	private float mouthWidth;
-	private float chinHeight;
-	private float cheekWidth;
+	public double foreheadHeight;
+	public double eyeSize;
+	public double eyeSpace;
+	public double noseSize;
+	public double noseWidth;
+	public double mouthSize;
+	public double mouthWidth;
 
 	public FacialFeatures(CvMat image) {
 		this.image = image;
 
-		if (findFeatures() == false) {
+		if (findFeatures() == false || face.width() == 0 || face.height() == 0) {
 			System.out.println("error: no faces detected in given image");
 			return;
 		}
+
+		// forehead height relative to face height
+		if (leye != null && reye != null) // if both eyes were found
+			foreheadHeight = (((leye.y() + reye.y()) / 2.0) - face.y()) / face.height();
+		else if (leye == null && reye != null) // left eye found but not right eye
+			foreheadHeight = (reye.y() - face.y()) / (double) face.height();
+		else if (reye == null && leye != null) // right eye found but not left one
+			foreheadHeight = (leye.y() - face.y()) / (double) face.height();
+		else // neither eye was found
+			foreheadHeight = 0.0;
+
+		// eye size (area) relative to face size (area)
+		if (leye != null && reye != null)
+			eyeSize = ((cvRectArea(leye) + cvRectArea(reye)) / 2.0) / (cvRectArea(face));
+		else if (leye == null && reye != null)
+			eyeSize = cvRectArea(reye) / cvRectArea(face);
+		else if (reye == null && leye != null)
+			eyeSize = cvRectArea(leye) / cvRectArea(face);
+		else
+			eyeSize = 0.0;		
+			
+		// eye spacing relative to face width
+		if (leye != null && reye != null) // both eyes found
+			eyeSpace = ((reye.x() + (reye.width() / 2.0)) - (leye.x() + (leye.width() / 2.0))) / face.width();
+		else // if either eye was not found, we cannot find spacing
+			eyeSpace = 0.0;		
+
+		// nose size (area) relative to face size (area)
+		noseSize = cvRectArea(nose) / cvRectArea(face);
+
+		// nose width relative to face width
+		noseWidth = (double) nose.width() / face.width();
+
+		// mouth size (area) relative to face size (area)
+		mouthSize = cvRectArea(mouth) / cvRectArea(face);
+
+		// mouth width relative to face width
+		mouthWidth = (double) mouth.width() / face.width();
 	}
 
 	public List<FacialFeature> getFeatures() {
 		return features;
 	}
-
+	
 	private boolean findFeatures() {
 		// opencv detection works 234234324x faster on grayscale images
 		CvMat gray_image = CvMat.create(image.rows(), image.cols(), CV_8U, 1);
@@ -75,14 +110,26 @@ public class FacialFeatures {
 		nose = detectFeature(nose_cascade, FacialFeatures.crop(gray_image, face));
 		
 		// realign rects from roi x,y coords -> image x,y coords
-		leye.x(leye.x() + leftFace.x());
-		leye.y(leye.y() + leftFace.y());
-		reye.x(reye.x() + rightFace.x());
-		reye.y(reye.y() + rightFace.y());
-		mouth.x(mouth.x() + lowerFace.x());
-		mouth.y(mouth.y() + lowerFace.y());
-		nose.x(nose.x() + face.x());
-		nose.y(nose.y() + face.y());
+		// test for null first to ensure we arent trying to manipulate null objects (in the case that no feature was found)
+		if (leye != null) {
+			leye.x(leye.x() + leftFace.x());
+			leye.y(leye.y() + leftFace.y());
+		}
+		
+		if (reye != null) {
+			reye.x(reye.x() + rightFace.x());
+			reye.y(reye.y() + rightFace.y());
+		}
+		
+		if (mouth != null) {
+			mouth.x(mouth.x() + lowerFace.x());
+			mouth.y(mouth.y() + lowerFace.y());
+		}
+		
+		if (nose != null) {
+			nose.x(nose.x() + face.x());
+			nose.y(nose.y() + face.y());
+		}
 		
 		features.add(new FacialFeature(face));
 		features.add(new FacialFeature(leye));
@@ -126,5 +173,11 @@ public class FacialFeatures {
 		cvSetImageROI(srcIpl, roi);
 		cvCopy(srcIpl, cropped);
 		return cropped.asCvMat();
+	}
+	
+	private static double cvRectArea(CvRect rect) {
+		if (rect == null)
+			return 0.0;
+		return rect.width() * rect.height();
 	}
 }

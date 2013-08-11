@@ -7,10 +7,10 @@ import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImageM;
 import java.util.List;
 
 import com.googlecode.javacv.CanvasFrame;
-import com.googlecode.javacv.cpp.opencv_core.*;
 
 public class App {
 	public static void main(String[] args) {   	
+		FacialFeatures current;
 
         for (int i = 0; i < args.length; i++) {
         	CvMat image = cvLoadImageM(args[i], CV_LOAD_IMAGE_COLOR);
@@ -19,14 +19,26 @@ public class App {
     			return;
     		}
         	
-        	List<FacialFeature> features = new FacialFeatures(image).getFeatures();
+        	current = new FacialFeatures(image);
+        	
+        	List<FacialFeature> features = current.getFeatures();
         	
         	for(FacialFeature f : features) 
         		putRects(image, f.boundingBox); // face rectangle
         	
+        	System.out.println(args[i] + ": ");
+			System.out.println("\tforeheadSize: " + current.foreheadHeight);
+			System.out.println("\teyeSize: " + current.eyeSize);
+			System.out.println("\teyeSpace: " + current.eyeSpace);
+			System.out.println("\tnoseSize: " + current.noseSize);
+			System.out.println("\tnoseWidth: " + current.noseWidth);
+			System.out.println("\tmouthSize: " + current.mouthSize);
+			System.out.println("\tmouthWidth: " + current.mouthWidth);
+			System.out.println();
+        	
         	try {
         		CanvasFrame canvas = new CanvasFrame("Face with boxes");
-				canvas.showImage(image.asIplImage());
+				canvas.showImage(image.asIplImage());				
 				canvas.waitKey();
 				canvas.dispose();
         	} catch (InterruptedException e) {
