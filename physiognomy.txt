@@ -1,0 +1,68 @@
+forehead
+	height
+		long
+			-shows a woman who is unlucky
+		short
+			-shows a man who will be poor and live a short life
+
+eyes
+	size
+		large
+			-shows a woman who is lucky, domineering in nature, highly respected, and a leader
+		small
+			-shows a woman who is shrewd and is not likely to rise in life
+	spacing
+		close together
+			-narrow and calculating approach to life. Although fairly intolerant, you can accurately assess the world around you and use it to best advantage
+			-criticisizes others, and will not demonstrate his feelings
+			-very focused on details and excel at exacting tasks where minute details are important
+			-very powerful ability to concentrate
+			-hates to be disturbed and may easily become stressed as a result
+			-deep interest in details
+		far apart
+			-very tolerant of others and far-sighted. However, you are also gullible and setbacks launch you on an emotional rollercoaster
+			-the person is expansive and communicative
+			-broad, open perspective and a far-sighted imagination
+			-trouble concentrating for long periods of time
+			-relaxed by nature and doesn't care much about small details
+			-only focuses on the big picture and this might make him a good manager
+
+
+nose
+	size
+		small
+			-shows a woman is cunning, shrewd, mischeivious and lustful
+			-shows a man who is religious-minded and kind-hearted
+			-does not have problems dealing with repetitive and systematic work
+		big
+			-hate receiving orders and like being their own bosses
+			-don't like doing small tasks and prefer making bigger contributions than others
+			-like to move higher in ranks and may fight for them
+			-bored easily from systematic and repetitive work
+	height
+		long
+			-shows a man that the person will be wealthly, lucky, and enjoy power
+			-real talent for planning and strategy. According to Chinese lore, a high straight nose shows a positive attitude towards life and luck in relationships
+			-proud of his accomplishments
+		short
+			-tend to be a workaholic, or at the very least a dependable workhorse. According to Chinese lore, a small short nose also indicates a tendency towards pessimism and lack of life energy
+			-free person escaping from responsibility
+	width
+		wide
+			-show a woman who is lazy, strong headed, proud and found of a life of pleasure
+			-happy to provide support and protection to your loved ones. It indicates generosity and a willingness to share
+			-stability of mind
+		narrow
+			-You are independent and self-sufficient, mostly because you haven't received the support of others earlier on
+
+mouth
+	height
+		full lips
+			-very expressive, physically and emotionally
+		thin lips
+			-reserved and cautious. You are not easily fooled by flattery. You are determined and decisive
+	size
+		large
+			-outgoing and extroverted person
+		small
+			-introverted, careful and cautious people
