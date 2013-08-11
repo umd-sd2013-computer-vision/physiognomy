@@ -17,7 +17,7 @@ public class App {
         	CvMat image = cvLoadImageM(args[i], CV_LOAD_IMAGE_COLOR);
         	if (image.size() == 0) {
     			System.out.println("error: cannot open " + image + "\n");
-    			return;
+    			continue;
         	}
         	
         	current = new FacialFeatures(image);
