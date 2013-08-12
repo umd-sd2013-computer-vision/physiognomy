@@ -2,25 +2,25 @@ package com.timetravellingtreasurechest.vision;
 
 public class ReportData {
 	
-	private static final double AVG_FOREHEAD_HEIGHT = 0.2969582371113202;
-	private static final double AVG_EYE_SIZE = 0.05727096626510349;
-	private static final double AVG_EYE_SPACE = 0.38660547183984056;
-	private static final double AVG_NOSE_SIZE = 0.08849819639003767;
-	private static final double AVG_NOSE_HEIGHT = 0.26920041703726744;
-	private static final double AVG_NOSE_WIDTH = 0.3240249760921849;
-	private static final double AVG_MOUTH_SIZE = 0.09566388018849253;
-	private static final double AVG_MOUTH_HEIGHT = 0.2359406533854216;
-	private static final double AVG_MOUTH_WIDTH = 0.39466172485312856;
+	private static final double AVG_FOREHEAD_HEIGHT = 0.2939684744147797;
+	private static final double AVG_EYE_SIZE = 0.057461373502253284;
+	private static final double AVG_EYE_SPACE = 0.39088657211005245;
+	private static final double AVG_NOSE_SIZE = 0.08370801614796489;
+	private static final double AVG_NOSE_HEIGHT = 0.260168510692947;
+	private static final double AVG_NOSE_WIDTH = 0.3132768055566671;
+	private static final double AVG_MOUTH_SIZE = 0.09756818299160343;
+	private static final double AVG_MOUTH_HEIGHT = 0.23787354797703603;
+	private static final double AVG_MOUTH_WIDTH = 0.3984773779768884;
 	
-	private static final double RANGE_FOREHEAD_HEIGHT = 0.01698916518799997;
-	private static final double RANGE_EYE_SIZE = 0.01154345017140788;
-	private static final double RANGE_EYE_SPACE = 0.0315783722604372;
-	private static final double RANGE_NOSE_SIZE = 0.021015865906068354;
-	private static final double RANGE_NOSE_HEIGHT = 0.032709543593996644;
-	private static final double RANGE_NOSE_WIDTH = 0.03904940791865713;
-	private static final double RANGE_MOUTH_SIZE = 0.03084221971405636;
-	private static final double RANGE_MOUTH_HEIGHT = 0.03918164958657194;
-	private static final double RANGE_MOUTH_WIDTH = 0.06522356424520552;
+	private static final double RANGE_FOREHEAD_HEIGHT = 0.021091145309799105;
+	private static final double RANGE_EYE_SIZE = 0.011491243527531217;
+	private static final double RANGE_EYE_SPACE = 0.03275965635016891;
+	private static final double RANGE_NOSE_SIZE = 0.029508910511422314;
+	private static final double RANGE_NOSE_HEIGHT = 0.043005330034989644;
+	private static final double RANGE_NOSE_WIDTH = 0.051401209584107696;
+	private static final double RANGE_MOUTH_SIZE = 0.03278262029579936;
+	private static final double RANGE_MOUTH_HEIGHT = 0.04088621229059656;
+	private static final double RANGE_MOUTH_WIDTH = 0.06822046809329754;
 	
 	private String report = "";
 	
@@ -46,6 +46,8 @@ public class ReportData {
 	// this manipulates the report string for now
 	// later on probably best to just return whether a value is above or below the average
 	private void calcFeature(double avg, double range, double val, String feature) {
+		if (val <= 0.0)
+			return;
 		if (val > avg + range)
 			report += "above average " + feature + ". ";
 		if (val < avg - range)
