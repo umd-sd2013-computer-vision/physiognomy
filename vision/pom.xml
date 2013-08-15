@@ -18,20 +18,21 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>googlecode.com</id>
-			<url>http://maven2.javacv.googlecode.com/git/</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
 
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
+		-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -44,41 +45,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>com.googlecode.javacv</groupId>
 			<artifactId>javacv</artifactId>
-			<version>0.5-windows-x86_64</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>procamcalib</artifactId>
-			<version>0.5</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>procamtracker</artifactId>
-			<version>0.5</version>
-			<scope>compile</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>javacv</artifactId>
-			<version>0.5</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.javacpp</groupId>
 			<artifactId>javacpp</artifactId>
-			<version>0.5</version>
-			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.javacv</groupId>
+			<artifactId>javacv</artifactId>
+			<classifier>windows-x86_64</classifier>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

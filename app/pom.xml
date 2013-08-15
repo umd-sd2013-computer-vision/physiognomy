@@ -21,13 +21,6 @@
 		<android.plugin.version>3.6.0</android.plugin.version>
 	</properties>
 
-  <repositories>
-    <repository>
-      <id>googlecode.com</id>
-      <url>http://maven2.javacv.googlecode.com/git/</url>
-    </repository>
-  </repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -36,12 +29,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.googlecode.javacv</groupId>
+			<artifactId>javacv</artifactId>
+			<classifier>android-arm</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.timetravellingtreasurechest</groupId>
 			<artifactId>vision</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
-    <!--<dependency>
+		<!--
+    <dependency>
       <groupId>com.googlecode.javacv</groupId>
       <artifactId>javacv</artifactId>
       <version>0.5-android-arm</version>
@@ -91,7 +89,7 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<sdk>
-						<platform>16</platform>
+						<platform>18</platform>
 					</sdk>
 				</configuration>
 			</plugin>

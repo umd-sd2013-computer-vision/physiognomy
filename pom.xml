@@ -39,16 +39,24 @@
 		<module>share</module>
 		<module>app</module>
 	</modules>
+	<repositories>
+		<repository>
+			<id>javacv</id>
+			<name>JavaCV</name>
+			<url>http://maven2.javacv.googlecode.com/git/</url>
+		</repository>
+	</repositories>
+
 
 	<dependencyManagement>
 		<dependencies>
 
 			<!-- Spring Beans - contains annotations/autowire -->
-			<dependency>
+			<!--<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-beans</artifactId>
 				<version>${org.springframework.version}</version>
-			</dependency>
+			</dependency>-->
 
 			<!-- Testing -->
 			<dependency>
@@ -76,8 +84,47 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- Logging -->
+			<!-- Open CV -->
 			<dependency>
+				<groupId>com.googlecode.javacv</groupId>
+				<artifactId>javacv</artifactId>
+				<version>0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.javacpp</groupId>
+				<artifactId>javacpp</artifactId>
+				<version>0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.javacv</groupId>
+				<artifactId>javacv</artifactId>
+				<version>0.5</version>
+				<classifier>windows-x86_64</classifier>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.javacv</groupId>
+				<artifactId>javacv</artifactId>
+				<version>0.5</version>
+				<classifier>android-arm</classifier>
+			</dependency>
+
+			<!--<dependency>
+				<groupId>com.googlecode.javacv</groupId>
+				<artifactId>procamcalib</artifactId>
+				<version>0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.javacv</groupId>
+				<artifactId>procamtracker</artifactId>
+				<version>0.5</version>
+			</dependency>
+			-->
+			
+			
+			
+
+			<!-- Logging -->
+			<!--<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${org.slf4j.version}</version>
@@ -94,7 +141,7 @@
 				<artifactId>log4j</artifactId>
 				<version>1.2.17</version>
 				<scope>test</scope>
-			</dependency>
+			</dependency>-->
 
 		</dependencies>
 	</dependencyManagement>
