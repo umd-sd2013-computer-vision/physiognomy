@@ -87,6 +87,10 @@ public class FacialFeatures {
 		return features;
 	}
 	
+	public static void testOpenCv() {
+		CvMat testMat = new CvMat();
+	}
+	
 	private boolean findFeatures() {
 		// opencv detection works 234234324x faster on grayscale images
 		CvMat gray_image = CvMat.create(image.rows(), image.cols(), CV_8U, 1);

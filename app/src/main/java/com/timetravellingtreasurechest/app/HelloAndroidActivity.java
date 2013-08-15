@@ -7,17 +7,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+
 import com.timetravellingtreasurechest.app.R;
+import com.timetravellingtreasurechest.vision.FacialFeatures;
+import com.googlecode.javacv.cpp.*;
 
-//import com.timetravellingtreasurechest.camera.*;
-
-//import com.timetravellingtreasurechest.physiognomy.ReportData;
-//import com.timetravellingtreasurechest.physiognomy.service.FacialFeatureService;
-//import com.timetravellingtreasurechest.physiognomy.service.IFacialFeatureService;
-//import com.timetravellingtreasurechest.physiognomy.service.IReportGeneratorService;
-//import com.timetravellingtreasurechest.physiognomy.service.ReportGeneratorService;
+import static com.googlecode.javacv.cpp.opencv_core.*;
+import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_COLOR;
+import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImageM;
 
 public class HelloAndroidActivity extends Activity {
 
@@ -27,12 +27,12 @@ public class HelloAndroidActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		// Setup the FrameLayout with the Camera Preview Screen
 		cameraSurfaceView = new Preview(this);
 		FrameLayout preview = (FrameLayout) this
 				.findViewById(R.id.PreviewFrame);
 		if (preview == null) {
+
 			System.out.println("PreviewFrame not found!");
 		} else {
 			System.out.println("PreviewFrame found");
@@ -54,6 +54,11 @@ public class HelloAndroidActivity extends Activity {
 		@Override
 		public void onPictureTaken(byte[] picture, Camera camera) {
 			System.out.println("Picture successfully taken: " + picture);
+			ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+			imageView.setImageDrawable(getResources().getDrawable(R.drawable.face));
+//			CvMat image = cvLoadImageM(getResources().getDrawable(R.drawable.face));
+			//CvMat image = cvLoadImageM(, CV_LOAD_IMAGE_COLOR);
+			 CvMat mat = new CvMat();
 			// Intent myIntent = new Intent();
 			// myIntent.setClassName(HelloAndroidActivity.this,
 			// "com.timetravellingtreasurechest.gui.ManageReportActivity");
