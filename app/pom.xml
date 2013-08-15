@@ -16,7 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<platform.version>4.1.1.4
+		<platform.version>2.2.1
 		</platform.version>
 		<android.plugin.version>3.6.0</android.plugin.version>
 	</properties>
@@ -28,48 +28,19 @@
 			<version>${platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>javacv</artifactId>
-			<classifier>android-arm</classifier>
-		</dependency>
-		<dependency>
-			<groupId>com.timetravellingtreasurechest</groupId>
-			<artifactId>vision</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<!--
-    <dependency>
-      <groupId>com.googlecode.javacv</groupId>
-      <artifactId>javacv</artifactId>
-      <version>0.5-android-arm</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.javacv</groupId>
-      <artifactId>procamcalib</artifactId>
-      <version>0.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.javacv</groupId>
-      <artifactId>procamtracker</artifactId>
-      <version>0.5</version>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.googlecode.javacv</groupId>
-      <artifactId>javacv</artifactId>
-      <version>0.5</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.javacpp</groupId>
-      <artifactId>javacpp</artifactId>
-      <version>0.5</version>
-      <scope>provided</scope>
-    </dependency>-->
+		<!-- <dependency> <groupId>com.googlecode.javacv</groupId> <artifactId>javacv</artifactId> 
+			<classifier>android-arm</classifier> </dependency> <dependency> <groupId>com.timetravellingtreasurechest</groupId> 
+			<artifactId>vision</artifactId> <version>${project.version}</version> </dependency> -->
+		<!-- <dependency> <groupId>com.googlecode.javacv</groupId> <artifactId>javacv</artifactId> 
+			<version>0.5-android-arm</version> <scope>provided</scope> </dependency> 
+			<dependency> <groupId>com.googlecode.javacv</groupId> <artifactId>procamcalib</artifactId> 
+			<version>0.5</version> <scope>provided</scope> </dependency> <dependency> 
+			<groupId>com.googlecode.javacv</groupId> <artifactId>procamtracker</artifactId> 
+			<version>0.5</version> <scope>provided</scope> </dependency> <dependency> 
+			<groupId>com.googlecode.javacv</groupId> <artifactId>javacv</artifactId> 
+			<version>0.5</version> <scope>provided</scope> </dependency> <dependency> 
+			<groupId>com.googlecode.javacpp</groupId> <artifactId>javacpp</artifactId> 
+			<version>0.5</version> <scope>provided</scope> </dependency> -->
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -89,7 +60,7 @@
 				<artifactId>android-maven-plugin</artifactId>
 				<configuration>
 					<sdk>
-						<platform>18</platform>
+						<platform>8</platform>
 					</sdk>
 				</configuration>
 			</plugin>
