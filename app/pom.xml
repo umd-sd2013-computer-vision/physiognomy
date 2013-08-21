@@ -36,17 +36,10 @@
 		<dependency>
 			<groupId>com.googlecode.javacv</groupId>
 			<artifactId>javacv</artifactId>
-			<!-- <scope>provided</scope> -->
 		</dependency>
 		<dependency>
 			<groupId>com.googlecode.javacpp</groupId>
 			<artifactId>javacpp</artifactId>
-			<!-- <scope>provided</scope> -->
-		</dependency>
-		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>javacv</artifactId>
-			<classifier>android-arm</classifier>
 		</dependency>
 	</dependencies>
 	<build>

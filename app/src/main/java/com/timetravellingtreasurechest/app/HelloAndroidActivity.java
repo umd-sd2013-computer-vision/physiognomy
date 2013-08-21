@@ -25,6 +25,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 
 import com.timetravellingtreasurechest.app.R;
+import com.timetravellingtreasurechest.camera.Preview;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 import com.googlecode.javacv.cpp.*;
 
@@ -70,9 +71,9 @@ public class HelloAndroidActivity extends Activity {
 		@Override
 		public void onPictureTaken(byte[] picture, Camera camera) {
 			System.out.println("Picture successfully taken: " + picture);
-			ImageView imageView = (ImageView) findViewById(R.id.imageView1);
-			imageView.setImageDrawable(getResources().getDrawable(
-					R.drawable.face));
+			// ImageView imageView = (ImageView) findViewById(R.id.imageView1);
+			// imageView.setImageDrawable(getResources().getDrawable(
+			// R.drawable.face));
 			//
 			// new Dir().process(new java.io.File("/"));
 			//
@@ -97,58 +98,6 @@ public class HelloAndroidActivity extends Activity {
 			cameraSurfaceView.startPreview();
 		}
 
-		public class Dir {
-			int spc_count = -1;
-			Set<String> doneDirectories = new HashSet<String>();
-
-			public Dir() {
-				doneDirectories.add("/proc");
-				doneDirectories.add("/sys");
-			}
-
-			public void process(File aFile) {
-				spc_count++;
-				String spcs = "";
-				boolean found = false;
-				// for (int i = 0; i < spc_count * 2; i++)
-				// spcs += " ";
-				try {
-					if (aFile.isFile()
-							&& aFile.getName().contains("opencv_core")) {
-						found = true;
-						System.out.println(aFile.getCanonicalPath()
-								+ aFile.getName());
-					}
-					// System.out.println(spcs + "[FIL] " + aFile.getPath()
-					// + aFile.getName());
-					else if (aFile.isDirectory()
-							&& !doneDirectories.contains(aFile
-									.getCanonicalPath())) {
-						doneDirectories.add(aFile.getCanonicalPath());
-						// System.out.println(spcs + "[DIR] " + aFile.getPath()
-						// + aFile.getName());
-						File[] listOfFiles = aFile.listFiles();
-						if (listOfFiles != null) {
-							for (int i = 0; i < listOfFiles.length; i++)
-								process(listOfFiles[i]);
-						} else {
-							// System.out.println(spcs + " [ACCESS DENIED]");
-						}
-					}
-				} catch (Exception e) {
-					System.out
-							.println("[UNK] An error occured reading the file");
-				}
-				for (int i = 0; i < spc_count * 2; i++)
-					spcs += " ";
-				if (!found) {
-					System.out.println(spcs + "Library files not found");
-				}
-				spc_count--;
-
-			}
-		}
-
 	}
 
 	@Override
@@ -158,53 +107,4 @@ public class HelloAndroidActivity extends Activity {
 		return true;
 	}
 	
-	private boolean unpackZip(String path, String zipname, String destinationPath)
-	{       
-	     InputStream is;
-	     ZipInputStream zis;
-	     try 
-	     {
-	         String filename;
-	         is = new FileInputStream(path + zipname);
-	         zis = new ZipInputStream(new BufferedInputStream(is));          
-	         ZipEntry ze;
-	         byte[] buffer = new byte[1024];
-	         int count;
-
-	         while ((ze = zis.getNextEntry()) != null) 
-	         {
-	             // zapis do souboru
-	             filename = ze.getName();
-
-	             // Need to create directories if not exists, or
-	             // it will generate an Exception...
-	             if (ze.isDirectory()) {
-	                File fmd = new File(destinationPath + filename);
-	                fmd.mkdirs();
-	                continue;
-	             }
-
-	             FileOutputStream fout = new FileOutputStream(destinationPath + filename);
-
-	             // cteni zipu a zapis
-	             while ((count = zis.read(buffer)) != -1) 
-	             {
-	                 fout.write(buffer, 0, count);             
-	             }
-
-	             fout.close();               
-	             zis.closeEntry();
-	         }
-
-	         zis.close();
-	     } 
-	     catch(IOException e)
-	     {
-	         e.printStackTrace();
-	         return false;
-	     }
-
-	    return true;
-	}
-
 }
