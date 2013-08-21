@@ -1,5 +1,6 @@
 package com.timetravellingtreasurechest.gui;
 
+import com.timetravellingtreasurechest.app.MainActivity;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.physiognomy.ReportData;
 import com.timetravellingtreasurechest.share.IReportSharingService;
