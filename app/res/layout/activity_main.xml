@@ -10,5 +10,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+    
+    <FrameLayout
+        android:id="@+id/PreviewFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:src="@drawable/face" />
+
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/TakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="Take Photo" />
+
+    <ToggleButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/TakePhoto"
+        android:layout_alignBottom="@+id/TakePhoto"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="17dp"
+        android:text="ToggleButton"
+        android:visibility="gone" />
 
 </RelativeLayout>
