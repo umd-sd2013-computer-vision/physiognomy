@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Physiognomy Oracle</string>
+    <string name="hello">Hello physiognomy-app!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_report">Physiognomy Fortune</string>
+    <string name="default_fortune">Sample fortune data goes in here, this will be replaced when a fortune is generated.</string>
+
+</resources>
