@@ -7,11 +7,13 @@ import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImageM;
 import java.util.List;
 
 import com.googlecode.javacv.CanvasFrame;
+import com.timetravellingtreasurechest.features.FacialFeature;
+import com.timetravellingtreasurechest.services.FacialFeatureService;
+import com.timetravellingtreasurechest.services.ServiceServer;
 
 public class App {
 	public static void main(String[] args) {   	
 		FacialFeatures current;
-		ReportData report;
 
         for (int i = 0; i < args.length; i++) {
         	
@@ -21,27 +23,15 @@ public class App {
     			continue;
         	}
         	
-        	current = new FacialFeatures(image);
+        	ServiceServer.setFacialFeatureService(new FacialFeatureService());
+        	current = ServiceServer.getFacialFeatureService().getFeatures(image);
         	
-        	List<FacialFeature> features = current.getFeatures();
+        	List<FacialFeature<?>> features = current.getFeatures();
         	
-        	for(FacialFeature f : features) 
-        		putRects(image, f.boundingBox); // face rectangle
+        	for(FacialFeature<?> f : features) 
+        		putRects(image, f.getBounds()); // face rectangle
         	
         	System.out.println(args[i] + ": ");
-//			System.out.println("\tforeheadHeight: " + current.foreheadHeight);
-//			System.out.println("\teyeSize: " + current.eyeSize);
-//			System.out.println("\teyeSpace: " + current.eyeSpace);
-//			System.out.println("\tnoseSize: " + current.noseSize);
-//			System.out.println("\tnoseHeight: " + current.noseHeight);
-//			System.out.println("\tnoseWidth: " + current.noseWidth);
-//			System.out.println("\tmouthSize: " + current.mouthSize);
-//			System.out.println("\tmouthHeight: " + current.mouthHeight);
-//			System.out.println("\tmouthWidth: " + current.mouthWidth);
-//			System.out.println();
-			
-			report = new ReportData(current);
-			System.out.println(report.getReportText());
         	
         	try {
         		CanvasFrame canvas = new CanvasFrame("Face with boxes");

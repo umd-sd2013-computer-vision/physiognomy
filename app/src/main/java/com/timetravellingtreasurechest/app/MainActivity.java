@@ -13,23 +13,29 @@ import android.hardware.Camera.PictureCallback;
 
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.camera.Preview;
-import com.timetravellingtreasurechest.physiognomy.ReportData;
-import com.timetravellingtreasurechest.physiognomy.service.FacialFeatureService;
-import com.timetravellingtreasurechest.physiognomy.service.IFacialFeatureService;
-import com.timetravellingtreasurechest.physiognomy.service.IReportGeneratorService;
-import com.timetravellingtreasurechest.physiognomy.service.ReportGeneratorService;
+import com.timetravellingtreasurechest.report.IReportGeneratorService;
+import com.timetravellingtreasurechest.report.ReportData;
+import com.timetravellingtreasurechest.report.ReportGeneratorService;
+import com.timetravellingtreasurechest.services.AndroidFacialFeatureService;
+import com.timetravellingtreasurechest.services.FacialFeatureService;
+import com.timetravellingtreasurechest.services.IFacialFeatureService;
+import com.timetravellingtreasurechest.services.ImageConverter;
+import com.timetravellingtreasurechest.services.ServiceServer;
 
 public class MainActivity extends Activity {
 
 	public static String REPORT = "ReportData";
 	// Dependencies
-	IFacialFeatureService facialFeatureService = new FacialFeatureService();
+	IFacialFeatureService facialFeatureService;
 	IReportGeneratorService reportGeneratorService = new ReportGeneratorService();
 	Preview cameraSurfaceView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(null));
+		
 		setContentView(R.layout.activity_main);
 
 		// Setup the FrameLayout with the Camera Preview Screen
@@ -57,12 +63,16 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onPictureTaken(byte[] picture, Camera camera) {
+			cameraSurfaceView.stopPreview();
 			System.out.println("Picture successfully taken: " + picture);
 			Intent myIntent = new Intent();
 			myIntent.setClassName(MainActivity.this,
 					"com.timetravellingtreasurechest.gui.ManageReportActivity");
+			
+			//ImageConverter.getCvMatFromRawImage(picture, , )
+			
 			ReportData report = reportGeneratorService
-					.getReport(facialFeatureService.getFeatures(picture));
+					.getReport(ServiceServer.getFacialFeatureService().getFeatures(picture));
 			myIntent.putExtra(MainActivity.REPORT, report);
 			System.out.println("Starting new activity");
 			startActivity(myIntent);

@@ -1,10 +1,20 @@
-package com.timetravellingtreasurechest.vision;
+package com.timetravellingtreasurechest.report;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ReportData {
+import com.timetravellingtreasurechest.features.Eyes;
+import com.timetravellingtreasurechest.features.Face;
+import com.timetravellingtreasurechest.features.FacialFeature;
+import com.timetravellingtreasurechest.features.Mouth;
+import com.timetravellingtreasurechest.features.Nose;
+import com.timetravellingtreasurechest.vision.FacialFeatures;
+
+public class ReportData implements Serializable {
+	
+	private static final long serialVersionUID = 6300208314239945582L;
 	
 	private static final double AVG_FOREHEAD_HEIGHT = 0.2939684744147797;
 	private static final double AVG_EYE_SIZE = 0.057461373502253284;
@@ -45,18 +55,21 @@ public class ReportData {
 	
 	private String report = "";
 	
-	public ReportData(FacialFeatures face) {
+	public ReportData(FacialFeatures f) {
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
-		
-		features.add(new ReportFeature(face.foreheadHeight, AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
-		features.add(new ReportFeature(face.eyeSize, AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
-		features.add(new ReportFeature(face.eyeSpace, AVG_EYE_SPACE, ABOVE_AVERAGE_EYE_SPACE, BELOW_AVERAGE_EYE_SPACE));
-		features.add(new ReportFeature(face.noseSize, AVG_NOSE_SIZE, ABOVE_AVERAGE_NOSE_SIZE, BELOW_AVERAGE_NOSE_SIZE));
-		features.add(new ReportFeature(face.noseHeight, AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
-		features.add(new ReportFeature(face.noseWidth, AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
-		features.add(new ReportFeature(face.mouthSize, AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
-		features.add(new ReportFeature(face.mouthHeight, AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
-		features.add(new ReportFeature(face.mouthWidth, AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
+		Face face = f.getFace();
+		Eyes eyes = f.getEyes();
+		Nose nose = f.getNose();
+		Mouth mouth = f.getMouth();
+		features.add(new ReportFeature(f.getForeheadHeight(), AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
+		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, eyes), AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
+		features.add(new ReportFeature(f.getEyeSpacing(), AVG_EYE_SPACE, ABOVE_AVERAGE_EYE_SPACE, BELOW_AVERAGE_EYE_SPACE));
+		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, nose), AVG_NOSE_SIZE, ABOVE_AVERAGE_NOSE_SIZE, BELOW_AVERAGE_NOSE_SIZE));
+		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, nose).height(), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
+		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, nose).width(), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
+		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, mouth), AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
+		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, mouth).height(), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
+		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, mouth).width(), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
 		
 		Collections.sort(features);
 		
