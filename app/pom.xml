@@ -72,5 +72,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+          <resource>
+            <directory>${basedir}/open-cv-native</directory>
+            <includes>
+		      <include>**/*.so</include>
+		    </includes>
+          </resource>
+        </resources>
 	</build>
 </project>
