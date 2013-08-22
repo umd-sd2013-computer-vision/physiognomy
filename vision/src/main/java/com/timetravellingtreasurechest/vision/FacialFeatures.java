@@ -1,5 +1,6 @@
 package com.timetravellingtreasurechest.vision;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import com.timetravellingtreasurechest.features.Nose;
 
 import static com.googlecode.javacv.cpp.opencv_core.*;
 
-public class FacialFeatures {
+public class FacialFeatures implements Serializable {
 	private Face face;
 	private Mouth mouth;
 	private Nose nose;

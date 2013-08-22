@@ -52,4 +52,11 @@ public class ImageConverter {
 		}
 		return rgbImage;
 	}
+	
+//	public static CvMat byteArrayToCvMat(byte[] in) {
+//	}
+//	
+//	public static byte[] cvMatToByteArray(CvMat in) {
+//		byte[] image = new byte[in.length()];
+//	}
 }
