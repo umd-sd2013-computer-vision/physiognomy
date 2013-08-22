@@ -28,14 +28,20 @@ public class Eyes extends FacialFeature<Eyes> {
 
 	Eyes(CvRect lEye, CvRect rEye) {
 		super(null);
-		this.leftEye = new myRect(lEye.x(), lEye.y(), lEye.width(), lEye.height());
-		this.rightEye = new myRect(rEye.x(), rEye.y(), rEye.width(), rEye.height());
+		if(lEye == null) this.leftEye = null;
+		else this.leftEye = new myRect(lEye.x(), lEye.y(), lEye.width(), lEye.height());
+		if(rEye == null) this.rightEye = null;
+		else this.rightEye = new myRect(rEye.x(), rEye.y(), rEye.width(), rEye.height());
 		
-		int maxHeight = Math.max(lEye.y() + lEye.height(), rEye.y() + rEye.height());
-		int height = maxHeight - Math.min(lEye.y(), rEye.y());
-		int width = rEye.x() - lEye.x() + rEye.width();
-		this.bounds = new myRect(lEye.x(), Math.min(lEye.y(), rEye.y()), width,
-				height);
+		if(rEye == null || lEye == null) {
+			this.bounds = null;
+		} else {
+			int maxHeight = Math.max(lEye.y() + lEye.height(), rEye.y() + rEye.height());
+			int height = maxHeight - Math.min(lEye.y(), rEye.y());
+			int width = rEye.x() - lEye.x() + rEye.width();
+			this.bounds = new myRect(lEye.x(), Math.min(lEye.y(), rEye.y()), width,
+					height);
+		}
 	}
 
 	@Override
@@ -96,8 +102,10 @@ public class Eyes extends FacialFeature<Eyes> {
 	public void drawBounds(CvMat image, Face face) {
 		CvRect l = getFaceLQuadrant(face);
 		CvRect r = getFaceRQuadrant(face);
-		drawBounds(image, new CvRect(leftEye.x, leftEye.y, leftEye.width, leftEye.height), new CvPoint(l.x(), l.y()));
-		drawBounds(image, new CvRect(rightEye.x, rightEye.y, rightEye.width, rightEye.height), new CvPoint(r.x(), r.y()));
+		if(leftEye != null)
+			drawBounds(image, new CvRect(leftEye.x, leftEye.y, leftEye.width, leftEye.height), new CvPoint(l.x(), l.y()));
+		if(rightEye != null)
+			drawBounds(image, new CvRect(rightEye.x, rightEye.y, rightEye.width, rightEye.height), new CvPoint(r.x(), r.y()));
 	}
 	
 	@Override

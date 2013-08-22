@@ -105,7 +105,10 @@ public class MainActivity extends Activity {
 				.getReport(
 						ServiceServer.getFacialFeatureService().getFeatures(
 								cvPicture), cvPicture);
+		
 		//myIntent.putExtra(MainActivity.REPORT, report);
+		if(latestReport != null)
+			latestReport.getOriginalImage().deallocate();
 		latestReport = report;
 		System.out.println("Starting new activity");
 		startActivity(myIntent);
