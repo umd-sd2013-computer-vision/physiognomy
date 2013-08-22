@@ -69,12 +69,11 @@ public class MainActivity extends Activity {
 		Button takeAPicture = (Button) this.findViewById(R.id.TakePhoto);
 		takeAPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				generateAndViewReport(getPictureFromFile("face"));
-				// Camera camera = cameraSurfaceView.getCamera();
-				// AudioManager mgr =
-				// (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-				// mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
-				// camera.takePicture(null, null, new HandlePictureStorage());
+				// generateAndViewReport(getsPictureFromFile("face"));
+				Camera camera = cameraSurfaceView.getCamera();
+				AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+				camera.takePicture(null, null, new HandlePictureStorage());
 			}
 		});
 
@@ -111,19 +110,22 @@ public class MainActivity extends Activity {
 		System.out.println("Activity returned");
 	}
 
-	private CvMat getPictureFromFile(String name) /*throws IOException*/ {
-//		InputStream image = getApplicationContext().getResources().getAssets().open(name + ".png");
-//		Drawable demoDraw = getApplicationContext().getResources().getDrawable(
-//				R.drawable.face);
-//		Bitmap bitmap = ((BitmapDrawable) demoDraw).getBitmap();
-//
-//		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-//		byte[] bitmapdata = stream.toByteArray();
-//		return ImageConverter.getCvMatFromRawImage(bitmapdata, new Rect(0, 0,
-//				demoDraw.getIntrinsicWidth(), demoDraw.getIntrinsicHeight()),
-//				false);
-		
+	private CvMat getPictureFromFile(String name) /* throws IOException */{
+		// InputStream image =
+		// getApplicationContext().getResources().getAssets().open(name +
+		// ".png");
+		// Drawable demoDraw =
+		// getApplicationContext().getResources().getDrawable(
+		// R.drawable.face);
+		// Bitmap bitmap = ((BitmapDrawable) demoDraw).getBitmap();
+		//
+		// ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		// bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+		// byte[] bitmapdata = stream.toByteArray();
+		// return ImageConverter.getCvMatFromRawImage(bitmapdata, new Rect(0, 0,
+		// demoDraw.getIntrinsicWidth(), demoDraw.getIntrinsicHeight()),
+		// false);
+
 		return (CvMat) opencv_highgui.cvLoadImageM("/mnt/sdcard/face.jpg");
 	}
 
