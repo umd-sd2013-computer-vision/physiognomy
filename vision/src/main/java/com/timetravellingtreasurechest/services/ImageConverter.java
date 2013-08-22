@@ -7,12 +7,16 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_8UC4;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR5652BGR;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_YUV2BGR_NV21;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
+
+import java.nio.ByteBuffer;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Size;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
+import com.googlecode.javacv.cpp.opencv_highgui;
 
 public class ImageConverter {
 	public static CvMat getCvMatFromRawImage(byte[] picture, Rect rect, boolean isNV21) {
@@ -53,10 +57,15 @@ public class ImageConverter {
 		return rgbImage;
 	}
 	
-//	public static CvMat byteArrayToCvMat(byte[] in) {
-//	}
-//	
-//	public static byte[] cvMatToByteArray(CvMat in) {
-//		byte[] image = new byte[in.length()];
-//	}
+	public static CvMat byteArrayToCvMat(byte[] in) {
+		CvMat image = new CvMat(in.length);
+		image.asByteBuffer().put(in,0,in.length);
+		return image;
+	}
+	
+	public static byte[] cvMatToByteArray(CvMat in) {		
+		byte[] image = new byte[in.getByteBuffer().capacity()];
+		in.getByteBuffer().get(image, 0, image.length);
+		return image;
+	}
 }

@@ -11,6 +11,7 @@ import com.timetravellingtreasurechest.features.Face;
 import com.timetravellingtreasurechest.features.FacialFeature;
 import com.timetravellingtreasurechest.features.Mouth;
 import com.timetravellingtreasurechest.features.Nose;
+import com.timetravellingtreasurechest.services.ImageConverter;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public class ReportData implements Serializable {
@@ -114,19 +115,28 @@ public class ReportData implements Serializable {
 	
 	
 	private static final String[] ABOVE_AVERAGE_MOUTH_WIDTH = { 
-		"laught a lot, showing off your naturally great smile. ",
+		"laugh a lot, showing off your naturally great smile. ",
 		"are a lively, sensual person who needs to be showered with love. "};
 	
 	private static final String[] BELOW_AVERAGE_MOUTH_WIDTH = { 
 		"are more practical than passionate. ",
 		"have fragile health that may contribute to your settled lifestyle. "};
 	
-	private String report = "";
-	private CvMat image;
+	private static final String[] SECOND_SENTANCE_PREFIX = {
+		"Also, you ",
+		"Addtionally, you ",
+		"People agree that you ",
+		"Further, you ",
+		"Likewise, you ",
+		"Still, "
+	};
+	
+	private String report = "You ";
+	private byte[] image;
 	private FacialFeatures features; 
 	
 	public ReportData(FacialFeatures f, CvMat image) {
-		this.image = image;
+		this.image = ImageConverter.cvMatToByteArray(image);
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
@@ -145,7 +155,7 @@ public class ReportData implements Serializable {
 		
 		Collections.sort(features);
 		
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 2; i++)
 			report += features.get(i).getReportText();
 	}
 	
@@ -158,7 +168,7 @@ public class ReportData implements Serializable {
 	}
 	
 	public CvMat getOriginalImage() {
-		return image.clone();
+		return ImageConverter.byteArrayToCvMat(image).clone();
 	}
 	
 	private class ReportFeature implements Comparable<ReportFeature> {

@@ -20,6 +20,11 @@
 	</properties>
 
 	<dependencies>
+<dependency>
+			<groupId>com.google.android</groupId>
+			<artifactId>android</artifactId>
+			<version>${platform.version}</version>
+		</dependency>
 
 		<!--<dependency>
 			<groupId>org.springframework</groupId>

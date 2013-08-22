@@ -17,8 +17,8 @@ public class Eyes extends FacialFeature<Eyes> {
 			.getFacialFeatureService().getCascadeClassifier(
 					"haarcascade_mcs_righteye");
 
-	private final CvRect leftEye;
-	private final CvRect rightEye;
+	private final myRect leftEye;
+	private final myRect rightEye;
 
 	protected Eyes() {
 		super(null);
@@ -28,13 +28,13 @@ public class Eyes extends FacialFeature<Eyes> {
 
 	Eyes(CvRect lEye, CvRect rEye) {
 		super(null);
-		this.leftEye = new CvRect(lEye.x(), lEye.y(), lEye.width(), lEye.height());
-		this.rightEye = new CvRect(rEye.x(), rEye.y(), rEye.width(), rEye.height());
+		this.leftEye = new myRect(lEye.x(), lEye.y(), lEye.width(), lEye.height());
+		this.rightEye = new myRect(rEye.x(), rEye.y(), rEye.width(), rEye.height());
 		
 		int maxHeight = Math.max(lEye.y() + lEye.height(), rEye.y() + rEye.height());
 		int height = maxHeight - Math.min(lEye.y(), rEye.y());
 		int width = rEye.x() - lEye.x() + rEye.width();
-		this.bounds = new CvRect(lEye.x(), Math.min(lEye.y(), rEye.y()), width,
+		this.bounds = new myRect(lEye.x(), Math.min(lEye.y(), rEye.y()), width,
 				height);
 	}
 
@@ -68,14 +68,14 @@ public class Eyes extends FacialFeature<Eyes> {
 		CvRect f = face.getBounds();
 		// forehead height relative to face height
 		if (leftEye != null && rightEye != null) // if both eyes were found
-			foreheadHeight = (((leftEye.y() + rightEye.y()) / 2.0) - f.y())
+			foreheadHeight = (((leftEye.y + rightEye.y) / 2.0) - f.y())
 					/ f.height();
 		else if (leftEye == null && rightEye != null) // left eye found but not
 														// right eye
-			foreheadHeight = (rightEye.y() - f.y()) / (double) f.height();
+			foreheadHeight = (rightEye.y - f.y()) / (double) f.height();
 		else if (rightEye == null && leftEye != null) // right eye found but not
 														// left one
-			foreheadHeight = (leftEye.y() - f.y()) / (double) f.height();
+			foreheadHeight = (leftEye.y - f.y()) / (double) f.height();
 		else
 			// neither eye was found
 			foreheadHeight = 0.0;
@@ -87,8 +87,8 @@ public class Eyes extends FacialFeature<Eyes> {
 		CvRect f = face.getBounds();
 		// eye spacing relative to face width
 		if (leftEye != null && rightEye != null) // both eyes found
-			eyeSpace = ((rightEye.x() + (rightEye.width() / 2.0)) - (leftEye
-					.x() + (leftEye.width() / 2.0))) / f.width();
+			eyeSpace = ((rightEye.x + (rightEye.width / 2.0)) - (leftEye
+					.x + (leftEye.width / 2.0))) / f.width();
 		else
 			// if either eye was not found, we cannot find spacing
 			eyeSpace = 0.0;
@@ -99,8 +99,8 @@ public class Eyes extends FacialFeature<Eyes> {
 	public void drawBounds(CvMat image, Face face) {
 		CvRect l = getFaceLQuadrant(face);
 		CvRect r = getFaceRQuadrant(face);
-		drawBounds(image, leftEye, new CvPoint(l.x(), l.y()));
-		drawBounds(image, rightEye, new CvPoint(r.x(), r.y()));
+		drawBounds(image, new CvRect(leftEye.x, leftEye.y, leftEye.width, leftEye.height), new CvPoint(l.x(), l.y()));
+		drawBounds(image, new CvRect(rightEye.x, rightEye.y, rightEye.width, rightEye.height), new CvPoint(r.x(), r.y()));
 	}
 	
 	@Override

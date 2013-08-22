@@ -26,7 +26,7 @@ public class Face extends FacialFeature<Face> {
 	
 	@Override
 	public void drawBounds(CvMat image, Face face) {
-		drawBounds(image, bounds, new CvPoint(0, 0));
+		drawBounds(image, new CvRect(bounds.x, bounds.y, bounds.width, bounds.height), new CvPoint(0, 0));
 	}
 	
 	@Override

@@ -9,6 +9,8 @@ import static com.googlecode.javacv.cpp.opencv_core.cvSetImageROI;
 import static com.googlecode.javacv.cpp.opencv_core.cvSize;
 import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
 
+import java.io.Serializable;
+
 import com.googlecode.javacv.cpp.opencv_objdetect;
 import com.googlecode.javacv.cpp.opencv_core.CvArr;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
@@ -21,15 +23,15 @@ import com.googlecode.javacv.cpp.opencv_core.CvSize;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 
-public abstract class FacialFeature<T extends FacialFeature<T>> {
+public abstract class FacialFeature<T extends FacialFeature<T>> implements Serializable {
 
-	protected CvRect bounds;
+	protected myRect bounds;
 
 	FacialFeature(CvRect bounds) {
 		if(bounds == null) {
 			this.bounds = null;
 		} else {
-			this.bounds = new CvRect(bounds.x(), bounds.y(), bounds.width(), bounds.height());
+			this.bounds = new myRect(bounds.x(), bounds.y(), bounds.width(), bounds.height());
 		}
 		
 	}
@@ -46,8 +48,8 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 
 	public CvRect getBounds() {
 		if(bounds == null) return null;
-		return new CvRect(bounds.x(), bounds.y(), bounds.width(),
-				bounds.height());
+		return new CvRect(bounds.x, bounds.y, bounds.width,
+				bounds.height);
 	}
 
 	public CvRect getFaceQuadrant(Face face) {
@@ -151,7 +153,7 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 
 	public void drawBounds(CvMat image, Face face) {
 		CvRect f = getFaceQuadrant(face);
-		drawBounds(image, bounds, new CvPoint(f.x(), f.y()));
+		drawBounds(image, new CvRect(bounds.x, bounds.y, bounds.width, bounds.height), new CvPoint(f.x(), f.y()));
 	}
 
 	protected static void drawBounds(CvMat image, CvRect toDraw, CvPoint offset) {
@@ -163,6 +165,21 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 	}
 
 	public void drawBounds(CvMat image) {
-		drawBounds(image, bounds, new CvPoint(0,0));
+		drawBounds(image, new CvRect(bounds.x, bounds.y, bounds.width, bounds.height), new CvPoint(0,0));
+	}
+	
+	class myRect implements Serializable {
+		static final long serialVersionUID = 1L;
+		int x;
+		int y;
+		int width;
+		int height;
+		
+		myRect(int x, int y, int width, int height) {
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
 	}
 }
