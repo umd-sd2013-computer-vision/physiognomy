@@ -52,10 +52,10 @@ public class FacialFeatures implements Serializable {
 	public Face getFace() {
 		return face;
 	}
-	public double getForeheadHeight() {
+	public Double getForeheadHeight() {
 		return foreheadHeight;
 	}
-	public double getEyeSpacing() {
+	public Double getEyeSpacing() {
 		return eyeSpace;
 	}
 

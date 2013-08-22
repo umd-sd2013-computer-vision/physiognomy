@@ -149,15 +149,27 @@ public class ReportData implements Serializable {
 		Eyes eyes = f.getEyes();
 		Nose nose = f.getNose();
 		Mouth mouth = f.getMouth();
-		features.add(new ReportFeature(f.getForeheadHeight(), AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
-		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, eyes), AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
-		features.add(new ReportFeature(f.getEyeSpacing(), AVG_EYE_SPACE, ABOVE_AVERAGE_EYE_SPACE, BELOW_AVERAGE_EYE_SPACE));
-		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, nose), AVG_NOSE_SIZE, ABOVE_AVERAGE_NOSE_SIZE, BELOW_AVERAGE_NOSE_SIZE));
-		features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, nose), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
-		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, nose), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
-		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, mouth), AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
-		//features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
-		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
+		
+		if(face == null || face.getBounds() == null) {
+			features = null;
+			return;
+		}
+		if(eyes != null && eyes.getBounds() != null) {
+			features.add(new ReportFeature(f.getForeheadHeight(), AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
+			features.add(new ReportFeature(FacialFeature.getRelativeArea(face, eyes), AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
+			features.add(new ReportFeature(f.getEyeSpacing(), AVG_EYE_SPACE, ABOVE_AVERAGE_EYE_SPACE, BELOW_AVERAGE_EYE_SPACE));
+		}
+		if(nose != null && nose.getBounds() != null) {
+			features.add(new ReportFeature(FacialFeature.getRelativeArea(face, nose), AVG_NOSE_SIZE, ABOVE_AVERAGE_NOSE_SIZE, BELOW_AVERAGE_NOSE_SIZE));
+			features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, nose), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
+			features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, nose), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
+		}
+		if(mouth != null && mouth.getBounds() != null) {
+			features.add(new ReportFeature(FacialFeature.getRelativeArea(face, mouth), AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
+			//features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
+			features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
+		}
+		
 		
 		Collections.sort(features);
 		
@@ -182,8 +194,8 @@ public class ReportData implements Serializable {
 		private double avgDifference;
 		private String reportText;
 		
-		public ReportFeature(double featureVal, double avg, String[] aboveText, String[] belowText) {
-			if (featureVal == 0.0) {
+		public ReportFeature(Double featureVal, double avg, String[] aboveText, String[] belowText) {
+			if (featureVal == null || featureVal == 0.0) {
 				avgDifference = 0.0;
 				reportText = "";
 				return;

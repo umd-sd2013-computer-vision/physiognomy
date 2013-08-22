@@ -28,7 +28,7 @@ public class ManageReportActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_manage_report);
         TextView reportText = (TextView)this.findViewById(R.id.reportText);
-        usingReport = (ReportData) getIntent().getSerializableExtra(MainActivity.REPORT);
+        usingReport = MainActivity.latestReport;//(ReportData) getIntent().getSerializableExtra(MainActivity.REPORT);
         reportText.setText(usingReport == null ? "Missing Report" : usingReport.getReportText());
         Button share = (Button)this.findViewById(R.id.Share);
         share.setOnClickListener(new OnClickListener() 
@@ -37,7 +37,7 @@ public class ManageReportActivity extends Activity {
                 {
 	                	Intent myIntent = new Intent();
 	                	myIntent.setClassName(ManageReportActivity.this, "com.timetravellingtreasurechest.gui.ShareActivity");
-	                	myIntent.putExtra(MainActivity.REPORT, usingReport);
+	                	//myIntent.putExtra(MainActivity.REPORT, usingReport);
 	                	startActivity(myIntent);  
                 }
         });

@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
 	public static String REPORT = "ReportData";
 	// Dependencies
 	Preview cameraSurfaceView;
+	public static ReportData latestReport;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +105,8 @@ public class MainActivity extends Activity {
 				.getReport(
 						ServiceServer.getFacialFeatureService().getFeatures(
 								cvPicture), cvPicture);
-		myIntent.putExtra(MainActivity.REPORT, report);
+		//myIntent.putExtra(MainActivity.REPORT, report);
+		latestReport = report;
 		System.out.println("Starting new activity");
 		startActivity(myIntent);
 		System.out.println("Activity returned");
