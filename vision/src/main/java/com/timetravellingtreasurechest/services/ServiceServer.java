@@ -8,4 +8,12 @@ public class ServiceServer {
 	public static IFacialFeatureService getFacialFeatureService() {
 		return facialFeatureService;
 	}
+	
+	private static IReportGeneratorService reportGeneratorService;
+	public static void setReportGeneratorService(IReportGeneratorService f) {
+		reportGeneratorService = f;
+	}
+	public static IReportGeneratorService getReportGeneratorService() {
+		return reportGeneratorService;
+	}
 }

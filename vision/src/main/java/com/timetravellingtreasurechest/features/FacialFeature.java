@@ -45,6 +45,7 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 	}
 
 	public CvRect getBounds() {
+		if(bounds == null) return null;
 		return new CvRect(bounds.x(), bounds.y(), bounds.width(),
 				bounds.height());
 	}
@@ -85,7 +86,7 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 	public static <T extends FacialFeature<T>> T getImage(Class<T> clazz,
 			CvMat image) {
 		T feature = getEmptyFeature(clazz).fromImage(image);
-		if (feature == null || feature.getBounds().height() <= 0
+		if (feature == null || feature.getBounds() != null || feature.getBounds().height() <= 0
 				|| feature.getBounds().width() <= 0) {
 			return null;
 		}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.timetravellingtreasurechest.features.Eyes;
 import com.timetravellingtreasurechest.features.Face;
 import com.timetravellingtreasurechest.features.FacialFeature;
@@ -54,8 +55,12 @@ public class ReportData implements Serializable {
 	private static final String[] BELOW_AVERAGE_MOUTH_WIDTH = { "below average mouth width 1. ","below average mouth width 2. ","below average mouth width 3. "};
 	
 	private String report = "";
+	private CvMat image;
+	private FacialFeatures features; 
 	
-	public ReportData(FacialFeatures f) {
+	public ReportData(FacialFeatures f, CvMat image) {
+		this.image = image;
+		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
 		Eyes eyes = f.getEyes();
@@ -79,6 +84,14 @@ public class ReportData implements Serializable {
 	
 	public String getReportText() {
 		return report;
+	}
+	
+	public FacialFeatures getFacialFeatures() {
+		return features;
+	}
+	
+	public CvMat getOriginalImage() {
+		return image.clone();
 	}
 	
 	private class ReportFeature implements Comparable<ReportFeature> {

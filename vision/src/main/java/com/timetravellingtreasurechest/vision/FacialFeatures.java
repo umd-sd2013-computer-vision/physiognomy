@@ -3,6 +3,7 @@ package com.timetravellingtreasurechest.vision;
 import java.util.Arrays;
 import java.util.List;
 
+import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.timetravellingtreasurechest.features.Eyes;
 import com.timetravellingtreasurechest.features.Face;
 import com.timetravellingtreasurechest.features.FacialFeature;
@@ -58,5 +59,12 @@ public class FacialFeatures {
 
 	public List<FacialFeature<?>> getFeatures() {
 		return Arrays.asList(face, eyes, nose, mouth);
+	}
+
+	public CvMat draw(CvMat image) {
+		for(FacialFeature<?> f : getFeatures()) {
+			f.drawBounds(image, face);
+		}
+		return image;
 	}
 }

@@ -9,23 +9,24 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.CV_YUV2BGR_NV21;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.hardware.Camera.Size;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 
 public class ImageConverter {
-	public static CvMat getCvMatFromRawImage(byte[] picture, Size size, boolean isNV21) {
+	public static CvMat getCvMatFromRawImage(byte[] picture, Rect rect, boolean isNV21) {
 		CvMat rgbImage;
 
 		// all this converts w/e format android camera captures with and
 		// converts to a BGR
 		if (isNV21) {
-			if (size.height % 2 != 0)
+			if (rect.height() % 2 != 0)
 				throw new RuntimeException("Odd height not supported");
 
-			CvMat nv21Image = CvMat.create((int)(size.height * 1.5),
-					size.width, CV_8UC1);
-			rgbImage = CvMat.create(size.height, size.width, CV_8UC3);
+			CvMat nv21Image = CvMat.create((int)(rect.height() * 1.5),
+					rect.width(), CV_8UC1);
+			rgbImage = CvMat.create(rect.height(), rect.width(), CV_8UC3);
 
 			nv21Image.getByteBuffer().put(picture);
 			cvCvtColor(nv21Image, rgbImage, CV_YUV2BGR_NV21);
@@ -34,14 +35,14 @@ public class ImageConverter {
 			Bitmap bitmap = BitmapFactory.decodeByteArray(picture, 0,
 					picture.length);
 			if (bitmap.getConfig() == Bitmap.Config.RGB_565) {
-				CvMat rgb565Image = CvMat.create(size.height, size.width,
+				CvMat rgb565Image = CvMat.create(rect.height(), rect.width(),
 						CV_8UC2);
 				bitmap.copyPixelsToBuffer(rgb565Image.getByteBuffer());
-				rgbImage = CvMat.create(size.height, size.width, CV_8UC3);
+				rgbImage = CvMat.create(rect.height(), rect.width(), CV_8UC3);
 				cvCvtColor(rgb565Image, rgbImage, CV_BGR5652BGR);
 				rgb565Image.release();
 			} else if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
-				rgbImage = CvMat.create(size.height, size.width, CV_8UC4);
+				rgbImage = CvMat.create(rect.height(), rect.width(), CV_8UC4);
 				bitmap.copyPixelsToBuffer(rgbImage.getByteBuffer());
 			} else
 				throw new RuntimeException("Unsupported bitmap config: "

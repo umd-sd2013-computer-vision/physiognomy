@@ -23,12 +23,20 @@ public class FacialFeatureService implements IFacialFeatureService {
 	}
 	
 	@Override
+	public CvMat getResizedImage(CvMat original) {
+		return cvMatResize(original, 400);
+	}
+	@Override
+	public CvMat getGrayedImage(CvMat original) {
+		CvMat gray_image = CvMat.create(original.rows(), original.cols(), CV_8U, 1);
+		cvCvtColor(original, gray_image, CV_RGB2GRAY);
+		cvEqualizeHist(gray_image, gray_image);
+		return gray_image;
+	}
+	
+	@Override
 	public FacialFeatures getFeatures(CvMat image) {
-		
-		CvMat small_image = cvMatResize(image, 400);
-		CvMat final_image = CvMat.create(small_image .rows(), small_image.cols(), CV_8U, 1);
-		cvCvtColor(small_image, final_image, CV_RGB2GRAY);
-		cvEqualizeHist(final_image, final_image);
+		CvMat final_image = getGrayedImage(getResizedImage(image));
 		
 		FacialFeatures features = new FacialFeatures(final_image);
 		for (int i = 0; i < 4 && features.getFace() == null; i++) {

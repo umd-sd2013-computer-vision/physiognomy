@@ -26,17 +26,15 @@ public class Eyes extends FacialFeature<Eyes> {
 		rightEye = null;
 	}
 
-	Eyes(CvRect e1, CvRect e2) {
+	Eyes(CvRect lEye, CvRect rEye) {
 		super(null);
-		CvRect lEye = e1.x() <= e2.x() ? e1 : e2;
 		this.leftEye = new CvRect(lEye.x(), lEye.y(), lEye.width(), lEye.height());
-		CvRect rEye = e1.x() <= e2.x() ? e2 : e1;
 		this.rightEye = new CvRect(rEye.x(), rEye.y(), rEye.width(), rEye.height());
 		
-		int maxHeight = Math.max(e1.y() + e1.height(), e2.y() + e2.height());
-		int height = maxHeight - Math.min(e1.y(), e1.y());
+		int maxHeight = Math.max(lEye.y() + lEye.height(), rEye.y() + rEye.height());
+		int height = maxHeight - Math.min(lEye.y(), rEye.y());
 		int width = rEye.x() - lEye.x() + rEye.width();
-		this.bounds = new CvRect(lEye.x(), Math.min(e1.y(), e2.y()), width,
+		this.bounds = new CvRect(lEye.x(), Math.min(lEye.y(), rEye.y()), width,
 				height);
 	}
 
