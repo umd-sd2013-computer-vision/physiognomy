@@ -1,6 +1,7 @@
 package com.timetravellingtreasurechest.vision;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class FacialFeatures implements Serializable {
 	private Nose nose;
 	private Eyes eyes;
 
-	private double foreheadHeight;
-	private double eyeSpace;
+	private Double foreheadHeight = null;
+	private Double eyeSpace = null;
 
 	public FacialFeatures(CvMat image) {
 		if(image == null) return;
@@ -59,7 +60,14 @@ public class FacialFeatures implements Serializable {
 	}
 
 	public List<FacialFeature<?>> getFeatures() {
-		return Arrays.asList(face, eyes, nose, mouth);
+		
+		List<FacialFeature<?>> list = new ArrayList<FacialFeature<?>>();
+		if(face == null) return list;
+		else list.add(face);
+		if(eyes != null) list.add(eyes);
+		if(nose != null) list.add(nose);
+		if(mouth != null) list.add(mouth);
+		return list;
 	}
 
 	public CvMat draw(CvMat image) {

@@ -82,16 +82,13 @@ public class Eyes extends FacialFeature<Eyes> {
 		return foreheadHeight;
 	}
 
-	public double getEyeSpacing(Face face) {
-		double eyeSpace = 0;
+	public Double getEyeSpacing(Face face) {
+		Double eyeSpace = null;
 		CvRect f = face.getBounds();
 		// eye spacing relative to face width
 		if (leftEye != null && rightEye != null) // both eyes found
 			eyeSpace = ((rightEye.x + (rightEye.width / 2.0)) - (leftEye
 					.x + (leftEye.width / 2.0))) / f.width();
-		else
-			// if either eye was not found, we cannot find spacing
-			eyeSpace = 0.0;
 		return eyeSpace;
 	}
 

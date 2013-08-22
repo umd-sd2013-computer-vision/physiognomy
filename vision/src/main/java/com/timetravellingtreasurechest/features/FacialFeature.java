@@ -136,10 +136,13 @@ public abstract class FacialFeature<T extends FacialFeature<T>> implements Seria
 
 	// returns cropped CvMat from the CvMat image given to the CvRect roi
 	protected static CvMat crop(CvMat src, CvRect roi) {
-		IplImage srcIpl = src.asIplImage().clone();
+//		IplImage srcIpl = new IplImage(src.length());
+//		cvCopy()
+//		srcIpl.asByteBuffer().put(src.asByteBuffer().array());
+		IplImage srcIpl = src.asIplImage();
 		IplImage cropped = cvCreateImage(cvSize(roi.width(), roi.height()),
 				srcIpl.depth(), srcIpl.nChannels());
-
+		
 		cvSetImageROI(srcIpl, roi);
 		cvCopy(srcIpl, cropped);
 		return cropped.asCvMat();

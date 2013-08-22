@@ -133,10 +133,18 @@ public class ReportData implements Serializable {
 	
 	private String report = "You ";
 	private byte[] image;
+	private int rows;
+	private int cols;
+	private int depth;
+	private int channels;
 	private FacialFeatures features; 
 	
 	public ReportData(FacialFeatures f, CvMat image) {
 		this.image = ImageConverter.cvMatToByteArray(image);
+		this.rows = image.rows();
+		this.cols = image.cols();
+		this.depth = image.depth();
+		this.channels = image.channels();
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
@@ -168,7 +176,7 @@ public class ReportData implements Serializable {
 	}
 	
 	public CvMat getOriginalImage() {
-		return ImageConverter.byteArrayToCvMat(image).clone();
+		return ImageConverter.byteArrayToCvMat(image, rows, cols, depth, channels);
 	}
 	
 	private class ReportFeature implements Comparable<ReportFeature> {

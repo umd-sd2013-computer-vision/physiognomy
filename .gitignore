@@ -24,3 +24,5 @@ local.properties
 
 # Ignore target output
 target/
+
+*.log

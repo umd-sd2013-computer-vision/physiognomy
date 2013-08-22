@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.hardware.Camera.Size;
 
+import com.googlecode.javacpp.Pointer;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_highgui;
 
@@ -57,9 +58,9 @@ public class ImageConverter {
 		return rgbImage;
 	}
 	
-	public static CvMat byteArrayToCvMat(byte[] in) {
-		CvMat image = new CvMat(in.length);
-		image.asByteBuffer().put(in,0,in.length);
+	public static CvMat byteArrayToCvMat(byte[] in, int rows, int cols, int depth, int channels) {
+		CvMat image = CvMat.create(rows, cols, depth, channels);
+		image.getByteBuffer().put(in);
 		return image;
 	}
 	
