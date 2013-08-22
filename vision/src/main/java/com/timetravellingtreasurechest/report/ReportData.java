@@ -126,9 +126,7 @@ public class ReportData implements Serializable {
 		"Also, you ",
 		"Addtionally, you ",
 		"People agree that you ",
-		"Further, you ",
-		"Likewise, you ",
-		"Still, "
+		"Further, you "
 	};
 	
 	private String report = "You ";
@@ -163,8 +161,9 @@ public class ReportData implements Serializable {
 		
 		Collections.sort(features);
 		
-		for (int i = 0; i < 2; i++)
-			report += features.get(i).getReportText();
+		report += features.get(0).getReportText();
+		report += SECOND_SENTANCE_PREFIX[(int) (Math.random() * SECOND_SENTANCE_PREFIX.length)];
+		report += features.get(1).getReportText();
 	}
 	
 	public String getReportText() {
