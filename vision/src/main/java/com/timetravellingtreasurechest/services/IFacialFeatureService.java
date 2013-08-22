@@ -7,4 +7,5 @@ import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public interface IFacialFeatureService {
 	public FacialFeatures getFeatures(CvMat image);
+	public CvHaarClassifierCascade getCascadeClassifier(String identifier);
 }

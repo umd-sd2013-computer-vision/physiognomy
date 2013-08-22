@@ -7,6 +7,10 @@ import static com.googlecode.javacv.cpp.opencv_highgui.cvLoadImageM;
 import java.util.List;
 
 import com.googlecode.javacv.CanvasFrame;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
+import com.timetravellingtreasurechest.features.Eyes;
+import com.timetravellingtreasurechest.features.Face;
 import com.timetravellingtreasurechest.features.FacialFeature;
 import com.timetravellingtreasurechest.services.FacialFeatureService;
 import com.timetravellingtreasurechest.services.ServiceServer;
@@ -26,31 +30,49 @@ public class App {
         	ServiceServer.setFacialFeatureService(new FacialFeatureService());
         	current = ServiceServer.getFacialFeatureService().getFeatures(image);
         	
-        	List<FacialFeature<?>> features = current.getFeatures();
-        	
-        	for(FacialFeature<?> f : features) 
-        		putRects(image, f.getBounds()); // face rectangle
-        	
-        	System.out.println(args[i] + ": ");
-        	
-        	try {
-        		CanvasFrame canvas = new CanvasFrame("Face with boxes");
-				canvas.showImage(image.asIplImage());				
-				canvas.waitKey();
-				canvas.dispose();
-        	} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+    		displayFeature(current, current.getFace(), image);
+    		displayFeature(current, current.getEyes(), image);
+    		displayFeature(current, current.getMouth(), image);
+    		displayFeature(current, current.getNose(), image);
         	 
         }
     }
-	
-	// draw rects on image relative to offsets given (for roi placement)
-	// only used for testing (if OUTPUT_IMAGE is set), not for final project
-	public static void putRects(CvMat image, CvRect rect) {
-		if (rect == null)
-			return;
 
-		cvRectangle(image, new CvPoint(rect.x(), rect.y()), new CvPoint(rect.x() + rect.width(), rect.y() + rect.height()), new CvScalar(0, 255, 0, 0), 1, 8, 0);
+	public static void displayFeature(FacialFeatures current, FacialFeature<?> f,CvMat image) {
+		CvMat displayMat = new CvMat(image.clone());
+		if(!Face.class.isInstance(f))
+			f.drawBounds(displayMat, current.getFace());
+		else
+			f.drawBounds(displayMat);
+		
+		CvRect r = f.getFaceQuadrant(current.getFace());
+		cvRectangle(displayMat, new CvPoint(r.x(), r.y()), new CvPoint(
+				r.x() + r.width(), r.y() + r.height()),
+				new CvScalar(255, 255, 255, 0), 1, 8, 0);
+		if(Eyes.class.isInstance(f)) {
+			r = ((Eyes)f).getFaceLQuadrant(current.getFace());
+			System.out.println("Left eye search box: " + r.x() + ", " + r.y());
+			cvRectangle(displayMat, new CvPoint(r.x(), r.y()), new CvPoint(
+					r.x() + r.width(), r.y() + r.height()),
+					new CvScalar(0, 255, 0, 0), 3, 8, 0);
+			r = ((Eyes)f).getFaceRQuadrant(current.getFace());
+			System.out.println("Right eye search box: " + r.x() + ", " + r.y());
+			cvRectangle(displayMat, new CvPoint(r.x(), r.y()), new CvPoint(
+					r.x() + r.width(), r.y() + r.height()),
+					new CvScalar(0, 255, 0, 0), 3, 8, 0);
+		}
+		
+		
+		System.out.println("Displaying: " + f.toString());
+		
+		CanvasFrame canvas = new CanvasFrame("Face with boxes");
+		canvas.showImage(displayMat.asIplImage());				
+		try {
+			canvas.waitKey();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		canvas.dispose();
+		displayMat.deallocate();
 	}
 }

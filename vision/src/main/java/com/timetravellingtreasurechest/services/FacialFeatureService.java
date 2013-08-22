@@ -11,20 +11,14 @@ import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvResize;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import android.content.Context;
-
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public class FacialFeatureService implements IFacialFeatureService {
 
-	public static CvHaarClassifierCascade getCascadeClassifier(String identifier) {
+	@Override
+	public CvHaarClassifierCascade getCascadeClassifier(String identifier) {
 		return new CvHaarClassifierCascade(cvLoad("src\\haarcascades\\" + identifier + ".xml"));
 	}
 	
@@ -33,7 +27,7 @@ public class FacialFeatureService implements IFacialFeatureService {
 		
 		CvMat small_image = cvMatResize(image, 400);
 		CvMat final_image = CvMat.create(small_image .rows(), small_image.cols(), CV_8U, 1);
-		cvCvtColor(image, final_image, CV_RGB2GRAY);
+		cvCvtColor(small_image, final_image, CV_RGB2GRAY);
 		cvEqualizeHist(final_image, final_image);
 		
 		FacialFeatures features = new FacialFeatures(final_image);

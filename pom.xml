@@ -45,6 +45,11 @@
 			<name>JavaCV</name>
 			<url>http://maven2.javacv.googlecode.com/git/</url>
 		</repository>
+		<repository>
+		    <id>springsource-repo</id>
+		    <name>SpringSource Repository</name>
+		    <url>http://repo.springsource.org/release</url>
+		</repository>
 	</repositories>
 
 

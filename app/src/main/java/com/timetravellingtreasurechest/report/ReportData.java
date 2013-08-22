@@ -65,11 +65,11 @@ public class ReportData implements Serializable {
 		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, eyes), AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
 		features.add(new ReportFeature(f.getEyeSpacing(), AVG_EYE_SPACE, ABOVE_AVERAGE_EYE_SPACE, BELOW_AVERAGE_EYE_SPACE));
 		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, nose), AVG_NOSE_SIZE, ABOVE_AVERAGE_NOSE_SIZE, BELOW_AVERAGE_NOSE_SIZE));
-		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, nose).height(), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
-		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, nose).width(), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
+		features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, nose), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
+		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, nose), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
 		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, mouth), AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
-		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, mouth).height(), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
-		features.add(new ReportFeature(FacialFeature.getRelativeBounds(face, mouth).width(), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
+		features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
+		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
 		
 		Collections.sort(features);
 		

@@ -4,55 +4,49 @@ import static com.googlecode.javacv.cpp.opencv_core.cvClearMemStorage;
 import static com.googlecode.javacv.cpp.opencv_core.cvCopy;
 import static com.googlecode.javacv.cpp.opencv_core.cvCreateImage;
 import static com.googlecode.javacv.cpp.opencv_core.cvGetSeqElem;
-import static com.googlecode.javacv.cpp.opencv_core.cvLoad;
+import static com.googlecode.javacv.cpp.opencv_core.cvRectangle;
 import static com.googlecode.javacv.cpp.opencv_core.cvSetImageROI;
 import static com.googlecode.javacv.cpp.opencv_core.cvSize;
 import static com.googlecode.javacv.cpp.opencv_objdetect.cvHaarDetectObjects;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import android.content.Context;
 
 import com.googlecode.javacv.cpp.opencv_objdetect;
 import com.googlecode.javacv.cpp.opencv_core.CvArr;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_core.CvSeq;
+import com.googlecode.javacv.cpp.opencv_core.CvSize;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 
 public abstract class FacialFeature<T extends FacialFeature<T>> {
-	private static Context context;
-	
-	public static void setContext(Context androidContext) {
-		context = androidContext;
-	}
-	
+
 	protected CvRect bounds;
+
 	FacialFeature(CvRect bounds) {
-		this.bounds = bounds;
+		if(bounds == null) {
+			this.bounds = null;
+		} else {
+			this.bounds = new CvRect(bounds.x(), bounds.y(), bounds.width(), bounds.height());
+		}
+		
 	}
-	
+
 	public abstract T fromImage(CvMat image);
 
 	public T fromImage(CvMat image, Face face) {
-		return this.fromImage(image);
+		return this.fromImage(crop(image, getFaceQuadrant(face)));
 	}
-	
-	public CvRect getNormalizedBounds(Face face) {
-		return getRelativeBounds(face, this);
-	}
+
 	public double getNormalizedArea(Face face) {
 		return cvRectArea(getBounds()) / cvRectArea(face.getBounds());
 	}
-	
 
 	public CvRect getBounds() {
-		return new CvRect(bounds);
+		return new CvRect(bounds.x(), bounds.y(), bounds.width(),
+				bounds.height());
 	}
 
 	public CvRect getFaceQuadrant(Face face) {
@@ -60,17 +54,18 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 	}
 
 	// Normalize with respect to face
-	public static CvRect getRelativeBounds(Face face, FacialFeature<?> feature) {
+	public static double getRelativeWidth(Face face, FacialFeature<?> feature) {
 		CvRect f = face.getBounds();
-		CvRect foff = new CvRect(feature.getBounds());
-		double scaleX = (foff.width() / f.width())*1000;
-		double scaleY = (foff.height() / f.height())*1000;
-		foff = foff.x((int) (foff.x() / scaleX));
-		foff = foff.y((int) (foff.y() / scaleY));
-		foff = foff.width((int) scaleX).height((int) scaleY);
-		return foff;
+		CvRect foff = feature.getBounds();
+		return ((double) foff.width()) / f.width();
 	}
-	
+
+	public static double getRelativeHeight(Face face, FacialFeature<?> feature) {
+		CvRect f = face.getBounds();
+		CvRect foff = feature.getBounds();
+		return ((double) foff.height()) / f.height();
+	}
+
 	public static double getRelativeArea(Face face, FacialFeature<?> feature) {
 		return cvRectArea(feature.getBounds()) / cvRectArea(face.getBounds());
 	}
@@ -111,16 +106,18 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 	// uses simple binary search to find a single object (with the minBoxes as
 	// the search term)
 	// returns CvRect object containing feature
-	protected static CvRect detectFeature(CvHaarClassifierCascade casc, CvMat in) {
+	protected static CvRect detectFeature(CvHaarClassifierCascade casc, CvMat in, int minSize) {
 		CvMemStorage storage = CvMemStorage.create();
 		CvSeq detected = new CvSeq();
 
-		for (int low = 3, high = 150, mid; detected.total() != 1 && low <= high;) {
+		// basically a binary search to find min near bounding boxes
+		for (int low = 3, high = 50, mid; detected.total() != 1 && low <= high;) {
 			mid = (low + high) / 2;
 
 			cvClearMemStorage(storage);
 			detected = cvHaarDetectObjects((CvArr) in, casc, storage, 1.1, mid,
-					opencv_objdetect.CV_HAAR_SCALE_IMAGE);
+					opencv_objdetect.CV_HAAR_SCALE_IMAGE, new CvSize(in.rows()
+							/ minSize, in.cols() / minSize), new CvSize());
 
 			if (detected.total() == 0)
 				high = mid - 1;
@@ -131,6 +128,7 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 		if (detected.total() == 0)
 			return null;
 		return new CvRect(cvGetSeqElem(detected, 0));
+
 	}
 
 	// returns cropped CvMat from the CvMat image given to the CvRect roi
@@ -148,5 +146,22 @@ public abstract class FacialFeature<T extends FacialFeature<T>> {
 		if (rect == null)
 			return 0.0;
 		return rect.width() * rect.height();
+	}
+
+	public void drawBounds(CvMat image, Face face) {
+		CvRect f = getFaceQuadrant(face);
+		drawBounds(image, bounds, new CvPoint(f.x(), f.y()));
+	}
+
+	protected static void drawBounds(CvMat image, CvRect toDraw, CvPoint offset) {
+		if (toDraw == null)
+			return;
+		cvRectangle(image, new CvPoint(toDraw.x() + offset.x(), toDraw.y() + offset.y()), new CvPoint(
+				toDraw.x() + offset.x() + toDraw.width(), toDraw.y() + offset.y() + toDraw.height()),
+				new CvScalar(0, 0, 0, 0), 1, 8, 0);
+	}
+
+	public void drawBounds(CvMat image) {
+		drawBounds(image, bounds, new CvPoint(0,0));
 	}
 }

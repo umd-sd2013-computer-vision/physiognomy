@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 
+import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.camera.Preview;
 import com.timetravellingtreasurechest.report.IReportGeneratorService;
@@ -33,9 +35,10 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(null));
-		
+
+		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(
+				null));
+
 		setContentView(R.layout.activity_main);
 
 		// Setup the FrameLayout with the Camera Preview Screen
@@ -68,11 +71,14 @@ public class MainActivity extends Activity {
 			Intent myIntent = new Intent();
 			myIntent.setClassName(MainActivity.this,
 					"com.timetravellingtreasurechest.gui.ManageReportActivity");
-			
-			//ImageConverter.getCvMatFromRawImage(picture, , )
-			
-			ReportData report = reportGeneratorService
-					.getReport(ServiceServer.getFacialFeatureService().getFeatures(picture));
+
+			CvMat cvPicture = ImageConverter
+					.getCvMatFromRawImage(picture, camera.getParameters()
+							.getPictureSize(), camera.getParameters()
+							.getPictureFormat() == ImageFormat.NV21);
+
+			ReportData report = reportGeneratorService.getReport(ServiceServer
+					.getFacialFeatureService().getFeatures(cvPicture));
 			myIntent.putExtra(MainActivity.REPORT, report);
 			System.out.println("Starting new activity");
 			startActivity(myIntent);

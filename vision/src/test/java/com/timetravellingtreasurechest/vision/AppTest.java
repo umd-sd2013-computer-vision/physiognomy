@@ -13,9 +13,4 @@ public class AppTest {
     public void testApp() {
         App.main(new String[]{"images/face.jpg"});
     }
-    
-    @Test
-    public void testOpenCv() {
-    	FacialFeatures.testOpenCv();
-    }
 }

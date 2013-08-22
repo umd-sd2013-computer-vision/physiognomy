@@ -23,12 +23,13 @@ import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public class AndroidFacialFeatureService implements IFacialFeatureService {
-	public static Context context;
+	public Context context;
 	public AndroidFacialFeatureService(Context context) {
 		this.context = context;
 	}
 	
-	public static CvHaarClassifierCascade getCascadeClassifier(String identifier) {
+	@Override
+	public CvHaarClassifierCascade getCascadeClassifier(String identifier) {
 		try {
 			InputStream is = context.getResources().openRawResource(context.getResources().getIdentifier(identifier, "file", context.getPackageName()));
 			File cascade_file = new File(context.getDir("cascade", Context.MODE_PRIVATE), identifier + ".xml");
