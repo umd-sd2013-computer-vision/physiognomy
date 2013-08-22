@@ -24,35 +24,102 @@ public class ReportData implements Serializable {
 	private static final double AVG_NOSE_HEIGHT = 0.260168510692947;
 	private static final double AVG_NOSE_WIDTH = 0.3132768055566671;
 	private static final double AVG_MOUTH_SIZE = 0.09756818299160343;
-	private static final double AVG_MOUTH_HEIGHT = 0.23787354797703603;
+	//private static final double AVG_MOUTH_HEIGHT = 0.23787354797703603;
 	private static final double AVG_MOUTH_WIDTH = 0.3984773779768884;
 	
-	private static final String[] ABOVE_AVERAGE_FOREHEAD_HEIGHT = { "above average forehead height 1. ","above average forehead height 2. ","above average forehead height 3. "};
-	private static final String[] BELOW_AVERAGE_FOREHEAD_HEIGHT = { "below average forehead height 1. ","below average forehead height 2. ","below average forehead height 3. "};
+	private static final String[] ABOVE_AVERAGE_FOREHEAD_HEIGHT = { 
+		"spend lots of time in your head, thinking, imagining and analyzing. ",
+		"are a strong minded person with gifts of perserverence and egalitarianism. "};
 	
-	private static final String[] ABOVE_AVERAGE_EYE_SIZE = { "above average eye size 1. ","above average eye size 2. ","above average eye size 3. "};
-	private static final String[] BELOW_AVERAGE_EYE_SIZE = { "below average eye size 1. ","below average eye size 2. ","below average eye size 3. "};
+	private static final String[] BELOW_AVERAGE_FOREHEAD_HEIGHT = { 
+		"don't like to make quick decisions. ",
+		"use your down-to-earth sensibilities to deliberate long and hard and come to a fair and equitable conclusion. ",
+		"take a while to form an opinion, but once formed it's hard to budge you into another point of view. "};
 	
-	private static final String[] ABOVE_AVERAGE_EYE_SPACE = { "above average eye space 1. ","above average eye space 2. ","above average eye space 3. "};
-	private static final String[] BELOW_AVERAGE_EYE_SPACE = { "below average eye space 1. ","below average eye space 2. ","below average eye space 3. "};
 	
-	private static final String[] ABOVE_AVERAGE_NOSE_SIZE = { "above average nose size 1. ","above average nose size 2. ","above average nose size 3. "};
-	private static final String[] BELOW_AVERAGE_NOSE_SIZE = { "below average nose size 1. ","below average nose size 2. ","below average nose size 3. "};
+	private static final String[] ABOVE_AVERAGE_EYE_SIZE = { 
+		"carry healthier emotional and spiritual balance. ",
+		"possess intelligence, imagination, and a desire for attention. "};
 	
-	private static final String[] ABOVE_AVERAGE_NOSE_HEIGHT = { "above average nose height 1. ","above average nose height 2. ","above average nose height 3. "};
-	private static final String[] BELOW_AVERAGE_NOSE_HEIGHT = { "below average nose height 1. ","below average nose height 2. ","below average nose height 3. "};
+	private static final String[] BELOW_AVERAGE_EYE_SIZE = { 
+		"are more conservative with your emotions. ",
+		"become impatient with the big emotions of others. ",
+		"possess a curious nature within your own small circle of interests. "};
 	
-	private static final String[] ABOVE_AVERAGE_NOSE_WIDTH = { "above average nose width 1. ","above average nose width 2. ","above average nose width 3. "};
-	private static final String[] BELOW_AVERAGE_NOSE_WIDTH = { "below average nose width 1. ","below average nose width 2. ","below average nose width 3. "};
 	
-	private static final String[] ABOVE_AVERAGE_MOUTH_SIZE = { "above average mouth size 1. ","above average mouth size 2. ","above average mouth size 3. "};
-	private static final String[] BELOW_AVERAGE_MOUTH_SIZE = { "below average mouth size 1. ","below average mouth size 2. ","below average mouth size 3. "};
+	private static final String[] ABOVE_AVERAGE_EYE_SPACE = { 
+		"see the big picture of any situation. ",
+		"are blessed with a good memory. ",
+		"are open to all sorts of new ideas and events, especially romantic ones. ",
+		"are naive which can add to your charms or get you in trouble. ",
+		"hold exceptionally high expectations for yourself. "};
 	
-	private static final String[] ABOVE_AVERAGE_MOUTH_HEIGHT = { "above average mouth height 1. ","above average mouth height 2. ","above average mouth height 3. "};
-	private static final String[] BELOW_AVERAGE_MOUTH_HEIGHT = { "below average mouth height 1. ","below average mouth height 2. ","below average mouth height 3. "};
+	private static final String[] BELOW_AVERAGE_EYE_SPACE = { 
+		"are social, entertaining, and a great host with extended circles of friends. ",
+		"have a gift of focus, particularily with minute details. ",
+		"carry natural analytical abilities and a strong ego which enable you to be a powerful leader. "};
 	
-	private static final String[] ABOVE_AVERAGE_MOUTH_WIDTH = { "above average mouth width 1. ","above average mouth width 2. ","above average mouth width 3. "};
-	private static final String[] BELOW_AVERAGE_MOUTH_WIDTH = { "below average mouth width 1. ","below average mouth width 2. ","below average mouth width 3. "};
+	
+	private static final String[] ABOVE_AVERAGE_NOSE_SIZE = { 
+		"require a strong desire to work independently. ",
+		"accept great power, ego, drive, and leadership. "};
+	
+	private static final String[] BELOW_AVERAGE_NOSE_SIZE = { 
+		"are best in groups activities where you use your creative imagination and spontaneity. ",
+		"think of others and are always willing to help out for the greater good. ",
+		"love to play and have to love what you do in order to work hard. "};
+	
+	
+	private static final String[] ABOVE_AVERAGE_NOSE_HEIGHT = { 
+		"own a good nose for business and common sense. ",
+		"hold a healthy sense of ambition and great instincts. ",
+		"possess leadership skills that people respond to positively. "};
+	
+	private static final String[] BELOW_AVERAGE_NOSE_HEIGHT = { 
+		"are loyal and compassionate, but generally short on drive and ambition. ",
+		"don't have the emotional stamina to thrive in competitive conditions. ",
+		"are often wary and overwhelmed by those who have strong egos and drive. "};
+	
+	
+	private static final String[] ABOVE_AVERAGE_NOSE_WIDTH = { 
+		"tend to be a mega-expert, honing in on the most detailed, esoteric specifics of your chosen interests. ",
+		"do not spend money frivolously or frequently. "};
+	
+	private static final String[] BELOW_AVERAGE_NOSE_WIDTH = { 
+		"are refined, elegant, and delicate, with impeccable taste. ",
+		"can appear to be self-centered. ",
+		"would rather be left alone to sort things out. "};
+	
+	
+	private static final String[] ABOVE_AVERAGE_MOUTH_SIZE = { 
+		"have a large personality. ",
+		"own a natural generosity that pretty much guarantees you a large circle of friends. "};
+	
+	private static final String[] BELOW_AVERAGE_MOUTH_SIZE = { 
+		"have difficulty relating to another's point of view or circumstances. ",
+		"are hypersensitive about not getting what you perceive as your due. ",
+		"tend to have an overinflated sense of your worth so you constantly imagine yourself as victims who need to fight for your rights. ",
+		"are not embarrassed to thrust yourself into the center of any attention. "};
+	
+	
+//	private static final String[] ABOVE_AVERAGE_MOUTH_HEIGHT = { 
+//		"above average mouth height 1. ",
+//		"above average mouth height 2. ",
+//		"above average mouth height 3. "};
+//	
+//	private static final String[] BELOW_AVERAGE_MOUTH_HEIGHT = { 
+//		"below average mouth height 1. ",
+//		"below average mouth height 2. ",
+//		"below average mouth height 3. "};
+	
+	
+	private static final String[] ABOVE_AVERAGE_MOUTH_WIDTH = { 
+		"laught a lot, showing off your naturally great smile. ",
+		"are a lively, sensual person who needs to be showered with love. "};
+	
+	private static final String[] BELOW_AVERAGE_MOUTH_WIDTH = { 
+		"are more practical than passionate. ",
+		"have fragile health that may contribute to your settled lifestyle. "};
 	
 	private String report = "";
 	private CvMat image;
@@ -73,7 +140,7 @@ public class ReportData implements Serializable {
 		features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, nose), AVG_NOSE_HEIGHT, ABOVE_AVERAGE_NOSE_HEIGHT, BELOW_AVERAGE_NOSE_HEIGHT));
 		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, nose), AVG_NOSE_WIDTH, ABOVE_AVERAGE_NOSE_WIDTH, BELOW_AVERAGE_NOSE_WIDTH));
 		features.add(new ReportFeature(FacialFeature.getRelativeArea(face, mouth), AVG_MOUTH_SIZE, ABOVE_AVERAGE_MOUTH_SIZE, BELOW_AVERAGE_MOUTH_SIZE));
-		features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
+		//features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
 		features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
 		
 		Collections.sort(features);
