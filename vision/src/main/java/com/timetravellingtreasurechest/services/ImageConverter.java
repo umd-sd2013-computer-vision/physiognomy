@@ -29,7 +29,6 @@ public class ImageConverter {
 					rect.width(), CV_8UC1);
 
 			nv21Image.getByteBuffer().put(picture);
-			//cvCvtColor(nv21Image, rgbImage, CV_YUV2BGR_NV21);
 			cvCvtColor(nv21Image, out, CV_YUV2RGBA_NV21);
 			nv21Image.release();
 		} else {
@@ -39,17 +38,10 @@ public class ImageConverter {
 				CvMat rgb565Image = CvMat.create(rect.height(), rect.width(),
 						CV_8UC2);
 				bitmap.copyPixelsToBuffer(rgb565Image.getByteBuffer());
-				cvCvtColor(rgb565Image, out, opencv_imgproc.CV_BGR5652BGRA);
+				cvCvtColor(rgb565Image, out, opencv_imgproc.CV_BGR5652RGBA);
 				rgb565Image.release();
-				
-				//rgbImage = CvMat.create(rect.height(), rect.width(), CV_8UC3);
-				//cvCvtColor(rgb565Image, rgbImage, CV_BGR5652BGR);
-				//rgb565Image.release();
 			} else if (bitmap.getConfig() == Bitmap.Config.ARGB_8888) {
-				//rgbImage = CvMat.create(rect.height(), rect.width(), CV_8UC4);
 				bitmap.copyPixelsToBuffer(out.getByteBuffer());
-				//cvCvtColor(rgbImage, out, opencv_imgproc.CV_RGBA2BGR565);
-				//rgbImage.release();
 			} else
 				throw new RuntimeException("Unsupported bitmap config: "
 						+ bitmap.getConfig());
@@ -71,14 +63,6 @@ public class ImageConverter {
 	}
 	
 	public static Bitmap cvMatToBitmap(CvMat in) {
-		//CvMat cvtImage = CvMat.create(in.rows(), in.cols(), CV_8UC2);
-		//cvCvtColor(in, cvtImage, opencv_imgproc.CV_BGR2BGR565);
-		
-//		CvMat out = cvCreateMat(in.rows(), in.cols(), CV_8UC4);
-//		cvCvtColor(in,out,opencv_imgproc.CV_BGR5652RGBA);		
-		
-		opencv_highgui.cvSaveImage("/mnt/sdcard/cvMatToBitMap.png", in);
-
 		Bitmap bmp = Bitmap.createBitmap(in.cols(), in.rows(), Bitmap.Config.ARGB_8888);
 		bmp.copyPixelsFromBuffer(in.getByteBuffer());
 		return bmp;		

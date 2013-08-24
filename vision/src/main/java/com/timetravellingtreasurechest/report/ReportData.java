@@ -4,6 +4,7 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_8UC2;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR5652BGR;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,11 +17,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.MediaStore.Images;
 
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
@@ -31,6 +34,7 @@ import com.timetravellingtreasurechest.features.FacialFeature;
 import com.timetravellingtreasurechest.features.Mouth;
 import com.timetravellingtreasurechest.features.Nose;
 import com.timetravellingtreasurechest.services.ImageConverter;
+import com.timetravellingtreasurechest.services.ServiceServer;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public class ReportData implements Serializable {
@@ -149,20 +153,11 @@ public class ReportData implements Serializable {
 	};
 	
 	private String report = "You ";
-	//private byte[] image;
 	private CvMat image;
-//	private int rows;
-//	private int cols;
-//	private int depth;
-//	private int channels;
 	private FacialFeatures features; 
 	
 	public ReportData(FacialFeatures f, CvMat image) {
 		this.image = ImageConverter.cvMatResize(image, 500);
-//		this.rows = image.rows();
-//		this.cols = image.cols();
-//		this.depth = image.depth();
-//		this.channels = image.channels();
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
@@ -251,22 +246,31 @@ public class ReportData implements Serializable {
 	}
 	
 	public Uri getImageUri() {
-		File imageFile = null;
+		Context inContext = ServiceServer.getAndroidContext();
 		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
-		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);	
+		String title = form.format(new Date()) + ".jpg";
 		
-		try {
-			path.mkdirs();
-			imageFile = new File(path, form.format(new Date()) + ".png");
-			FileOutputStream fileOutPutStream = new FileOutputStream(imageFile);
-			getBitmap().compress(Bitmap.CompressFormat.PNG, 80, fileOutPutStream);
-	
-			fileOutPutStream.flush();
-			fileOutPutStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return Uri.parse("file://" + imageFile.getAbsolutePath());
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+		String path = Images.Media.insertImage(inContext.getContentResolver(), getBitmap(), title, null);
+		return Uri.parse(path);
+		  
+//		File imageFile = null;
+//		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
+//		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);	
+//		
+//		try {
+//			path.mkdirs();
+//			imageFile = new File(path, form.format(new Date()) + ".jpg");
+//			FileOutputStream fileOutPutStream = new FileOutputStream(imageFile);
+//			getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, fileOutPutStream);
+//	
+//			fileOutPutStream.flush();
+//			fileOutPutStream.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return Uri.parse("file://" + imageFile.getAbsolutePath());
 	}
 }

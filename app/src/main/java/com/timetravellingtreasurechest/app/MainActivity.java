@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 		Button takeAPicture = (Button) this.findViewById(R.id.TakePhoto);
 		takeAPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				//generateAndViewReport(getPictureFromFile("face"));
+//				generateAndViewReport(getPictureFromFile("face"));
 				Camera camera = cameraSurfaceView.getCamera();
 				AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 				mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 								cvPicture), cvPicture);
 		
 		//myIntent.putExtra(MainActivity.REPORT, report);
-		if(latestReport.getOriginalImage() != null)
+		if(latestReport != null && latestReport.getOriginalImage() != null)
 			latestReport.getOriginalImage().deallocate();
 		latestReport = report;
 		System.out.println("Starting new activity");

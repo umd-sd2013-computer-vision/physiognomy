@@ -1,6 +1,8 @@
 package com.timetravellingtreasurechest.camera;
 
+
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -28,7 +30,9 @@ public class Preview extends SurfaceView implements Callback {
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
         Camera.Parameters parameters = camera.getParameters();
-        parameters.setPreviewSize(width, height);
+//        parameters.setPreviewSize(width, height);
+        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
+        parameters.setPreviewSize(previewSizes.get(0).width, previewSizes.get(0).height);
         camera.setParameters(parameters);
         camera.startPreview();
 	}
