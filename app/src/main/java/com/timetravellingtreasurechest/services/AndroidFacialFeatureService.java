@@ -1,15 +1,7 @@
 package com.timetravellingtreasurechest.services;
 
-import static com.googlecode.javacv.cpp.opencv_core.CV_8U;
-import static com.googlecode.javacv.cpp.opencv_core.cvCreateMat;
-import static com.googlecode.javacv.cpp.opencv_core.cvFlip;
-import static com.googlecode.javacv.cpp.opencv_core.cvLoad;
-import static com.googlecode.javacv.cpp.opencv_core.cvTranspose;
-import static com.googlecode.javacv.cpp.opencv_imgproc.CV_INTER_LINEAR;
-import static com.googlecode.javacv.cpp.opencv_imgproc.CV_RGB2GRAY;
-import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
-import static com.googlecode.javacv.cpp.opencv_imgproc.cvEqualizeHist;
-import static com.googlecode.javacv.cpp.opencv_imgproc.cvResize;
+import static com.googlecode.javacv.cpp.opencv_core.*;
+import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +11,7 @@ import java.io.InputStream;
 import android.content.Context;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
+import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
@@ -50,12 +43,13 @@ public class AndroidFacialFeatureService implements IFacialFeatureService {
 	}
 	@Override
 	public CvMat getResizedImage(CvMat original) {
-		return cvMatResize(original, 400);
+		return ImageConverter.cvMatResize(original, 400);
 	}
+	
 	@Override
 	public CvMat getGrayedImage(CvMat original) {
 		CvMat gray_image = CvMat.create(original.rows(), original.cols(), CV_8U, 1);
-		cvCvtColor(original, gray_image, CV_RGB2GRAY);
+		cvCvtColor(original, gray_image, opencv_imgproc.CV_BGRA2GRAY);
 		cvEqualizeHist(gray_image, gray_image);
 		return gray_image;
 	}
@@ -74,15 +68,6 @@ public class AndroidFacialFeatureService implements IFacialFeatureService {
 		return features;
 	}
 	
-	private static CvMat cvMatResize(CvMat src, int new_height) {
-		double aspect = ((double) src.rows()) / src.cols();
-		int height = new_height;
-		int width = (int) (((double) new_height) / aspect);
-		
-	    CvMat dest = cvCreateMat(height, width, src.type());
-	    cvResize(src, dest, CV_INTER_LINEAR);
-	    return dest;
-	} 
 	private static CvMat cvRotateStep(CvMat in, int steps) {
 	    CvMat rotated;
 
