@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:paddingBottom="10dp"
         android:text="You carry natural analytical abilities and a strong ego which enable you to be a powerful leader. Additionally, you take a while to form an opinion, but once formed it's hard to budge you into anotehr point of view."
-	    android:textSize="14sp"
+	    android:textSize="16sp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 	 
     <Button

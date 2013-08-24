@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
@@ -26,6 +27,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore.Images;
 
+import com.googlecode.javacv.cpp.opencv_core;
+import com.googlecode.javacv.cpp.opencv_core.CvArr;
+import com.googlecode.javacv.cpp.opencv_core.CvFont;
+import com.googlecode.javacv.cpp.opencv_core.CvPoint;
+import com.googlecode.javacv.cpp.opencv_core.CvScalar;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
@@ -158,7 +164,7 @@ public class ReportData implements Serializable {
 	private FacialFeatures features; 
 	
 	public ReportData(FacialFeatures f, CvMat image) {
-		this.image = ImageConverter.cvMatResize(image,1200);
+		this.image = ImageConverter.cvMatResize(image,800);
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
@@ -246,16 +252,16 @@ public class ReportData implements Serializable {
 		}
 	}
 	
-	public Uri getImageUri() {
+	public Uri getImageUri() {		
 		Context inContext = ServiceServer.getAndroidContext();
 		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
 		String title = form.format(new Date()) + ".jpg";		
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+		getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
 		String path = Images.Media.insertImage(inContext.getContentResolver(), getBitmap(), title, null);
 		return Uri.parse(path);
-		  
+		
 //		File imageFile = null;
 //		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
 //		File path = inContext.getCacheDir();

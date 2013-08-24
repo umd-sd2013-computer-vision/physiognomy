@@ -16,7 +16,6 @@ import com.googlecode.javacv.cpp.opencv_highgui;
 
 public class ImageConverter {
 	public static CvMat getCvMatFromRawImage(byte[] picture, Rect rect, boolean isNV21) {
-		CvMat rgbImage = null;
 		CvMat out = CvMat.create(rect.height(), rect.width(), CV_8UC4);
 
 		// all this converts w/e format android camera captures with and
