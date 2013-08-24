@@ -1,7 +1,10 @@
 package com.timetravellingtreasurechest.services;
 
+import android.content.Context;
+
 public class ServiceServer {
 	private static IFacialFeatureService facialFeatureService;
+	private static Context context;
 	public static void setFacialFeatureService(IFacialFeatureService f) {
 		facialFeatureService = f;
 	}
@@ -15,5 +18,13 @@ public class ServiceServer {
 	}
 	public static IReportGeneratorService getReportGeneratorService() {
 		return reportGeneratorService;
+	}
+	
+	public static Context getAndroidContext() {
+		return context;
+	}
+	
+	public static void setAndroidContext(Context context) {
+		ServiceServer.context = context;
 	}
 }

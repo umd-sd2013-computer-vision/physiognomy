@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		ServiceServer.setAndroidContext(getApplicationContext());
 		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(
 				this.getApplicationContext()));
 		ServiceServer
