@@ -4,6 +4,7 @@ import static com.googlecode.javacv.cpp.opencv_core.CV_8UC2;
 import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR5652BGR;
 import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
 
+import java.awt.Graphics;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -157,14 +158,14 @@ public class ReportData implements Serializable {
 	private FacialFeatures features; 
 	
 	public ReportData(FacialFeatures f, CvMat image) {
-		this.image = ImageConverter.cvMatResize(image, 500);
+		this.image = ImageConverter.cvMatResize(image,1200);
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
 		Eyes eyes = f.getEyes();
 		Nose nose = f.getNose();
 		Mouth mouth = f.getMouth();
-		
+				
 		if(face == null || face.getBounds() == null) {
 			features = null;
 			return;
@@ -248,7 +249,7 @@ public class ReportData implements Serializable {
 	public Uri getImageUri() {
 		Context inContext = ServiceServer.getAndroidContext();
 		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
-		String title = form.format(new Date()) + ".jpg";
+		String title = form.format(new Date()) + ".jpg";		
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		getBitmap().compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -257,10 +258,10 @@ public class ReportData implements Serializable {
 		  
 //		File imageFile = null;
 //		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
-//		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);	
+//		File path = inContext.getCacheDir();
 //		
 //		try {
-//			path.mkdirs();
+//			//path.mkdirs();
 //			imageFile = new File(path, form.format(new Date()) + ".jpg");
 //			FileOutputStream fileOutPutStream = new FileOutputStream(imageFile);
 //			getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, fileOutPutStream);
