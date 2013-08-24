@@ -1,11 +1,8 @@
 package com.timetravellingtreasurechest.app;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,16 +11,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.Size;
 
-import com.googlecode.javacv.cpp.opencv_core;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.timetravellingtreasurechest.app.R;
@@ -31,11 +24,7 @@ import com.timetravellingtreasurechest.camera.Preview;
 import com.timetravellingtreasurechest.report.ReportData;
 import com.timetravellingtreasurechest.services.AndroidFacialFeatureService;
 import com.timetravellingtreasurechest.services.AndroidReportGeneratorService;
-import com.timetravellingtreasurechest.services.FacialFeatureService;
-import com.timetravellingtreasurechest.services.IFacialFeatureService;
-import com.timetravellingtreasurechest.services.IReportGeneratorService;
 import com.timetravellingtreasurechest.services.ImageConverter;
-import com.timetravellingtreasurechest.services.ReportGeneratorService;
 import com.timetravellingtreasurechest.services.ServiceServer;
 
 public class MainActivity extends Activity {
@@ -70,7 +59,7 @@ public class MainActivity extends Activity {
 		Button takeAPicture = (Button) this.findViewById(R.id.TakePhoto);
 		takeAPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-//				generateAndViewReport(getPictureFromFile("face"));
+				// generateAndViewReport(getPictureFromFile("face"));
 				Camera camera = cameraSurfaceView.getCamera();
 				AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 				mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
@@ -115,23 +104,10 @@ public class MainActivity extends Activity {
 		System.out.println("Activity returned");
 	}
 
+	@SuppressWarnings("unused")
 	private CvMat getPictureFromFile(String name) /* throws IOException */{
-		// InputStream image =
-		// getApplicationContext().getResources().getAssets().open(name +
-		// ".png");
-		// Drawable demoDraw =
-		// getApplicationContext().getResources().getDrawable(
-		// R.drawable.face);
-		// Bitmap bitmap = ((BitmapDrawable) demoDraw).getBitmap();
-		//
-		// ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		// bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		// byte[] bitmapdata = stream.toByteArray();
-		// return ImageConverter.getCvMatFromRawImage(bitmapdata, new Rect(0, 0,
-		// demoDraw.getIntrinsicWidth(), demoDraw.getIntrinsicHeight()),
-		// false);
-
-		return (CvMat) opencv_highgui.cvLoadImageM("/mnt/sdcard/face.jpg");
+		return (CvMat) opencv_highgui.cvLoadImageM(Environment
+				.getExternalStorageDirectory().getPath() + name + ".jpg");
 	}
 
 	@Override
