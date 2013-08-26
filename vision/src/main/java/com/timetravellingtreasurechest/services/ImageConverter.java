@@ -64,12 +64,19 @@ public class ImageConverter {
 	}
 	
 	public static CvMat cvGetFace(CvMat in, CvRect face) {
-		double aspect = ((double) in.rows()) / in.cols();
-		int smallHeight = 400;
-		int smallWidth = (int) (((double) smallHeight) / aspect);
-		int scale = in.rows() / smallHeight;
+		double scale = in.rows() / 400.0;
+
+		// create rect that contains only the face
+		CvRect largeFace = new CvRect((int) (scale * face.x()), (int) (scale * face.y()), (int) (scale * face.width()), (int) (scale * face.height()));
+		int zoomFactor = (int) (largeFace.width() * 0.25); // 0.25 = 25% face width/height added to bounding box
 		
-		CvRect largeFace = new CvRect(face.x() * scale, face.y() * scale, face.width() * scale, face.height() * scale);
+		// decrease x and y coords by zoom factor... min prevents from moving coords beyond edges
+		largeFace.x(Math.max(largeFace.x() - zoomFactor,0));
+		largeFace.y(Math.max(largeFace.y() - zoomFactor,0));
+		
+		// increase width and height by 2 x zoom (to account for x and y moving) ... max prevents from moving coords beyond edges
+		largeFace.width(Math.min(largeFace.width() + zoomFactor * 2, in.cols()));
+		largeFace.height(Math.min(largeFace.height() + zoomFactor * 2, in.rows()));
 		
 		return FacialFeature.crop(in, largeFace);
 	}

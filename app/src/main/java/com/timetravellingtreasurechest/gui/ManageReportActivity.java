@@ -9,7 +9,9 @@ import com.timetravellingtreasurechest.share.ReportSharingService;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,11 +24,12 @@ public class ManageReportActivity extends Activity {
 	
 	// Dependencies
 	ReportData usingReport;
-	IReportSharingService reportSharingService = new ReportSharingService();
+	ReportSharingService reportSharingService = new ReportSharingService();
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity.cameraSurfaceView.stopPreview();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_manage_report);
         TextView reportText = (TextView)this.findViewById(R.id.reportText);
@@ -50,7 +53,11 @@ public class ManageReportActivity extends Activity {
         });
         
         ImageView reportImage = (ImageView) this.findViewById(R.id.reportImage);
-        reportImage.setImageBitmap(MainActivity.latestReport.getBitmap());
+        try {
+        	reportImage.setImageBitmap(MediaStore.Images.Media.getBitmap(this.getContentResolver(), MainActivity.latestReport.getImageUri()));
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
     }
 
     @Override

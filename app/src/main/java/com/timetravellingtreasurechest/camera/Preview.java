@@ -82,7 +82,8 @@ public class Preview extends SurfaceView implements Callback {
     }
 
 	public void stopPreview() {
-		camera.stopPreview();
+		if (camera != null)
+			camera.stopPreview();
 	}
 
 }

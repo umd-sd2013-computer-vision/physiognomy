@@ -21,7 +21,7 @@ public class Face extends FacialFeature<Face> {
 
 	@Override
 	public Face fromImage(CvMat image) {
-		return new Face(detectFeature(face_cascade, image, 3));
+		return new Face(detectFeature(face_cascade, image, 5));
 	}
 	
 	@Override

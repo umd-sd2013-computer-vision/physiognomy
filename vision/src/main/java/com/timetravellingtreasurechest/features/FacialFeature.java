@@ -142,7 +142,7 @@ public abstract class FacialFeature<T extends FacialFeature<T>> implements Seria
 		IplImage srcIpl = src.asIplImage();
 		IplImage cropped = cvCreateImage(cvSize(roi.width(), roi.height()),
 				srcIpl.depth(), srcIpl.nChannels());
-		
+
 		cvSetImageROI(srcIpl, roi);
 		cvCopy(srcIpl, cropped);
 		return cropped.asCvMat();

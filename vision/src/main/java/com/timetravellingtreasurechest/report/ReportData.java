@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import android.os.Environment;
 import android.provider.MediaStore.Images.Media;
 import android.content.ContentValues;
 
@@ -142,11 +143,19 @@ public class ReportData {
 	
 	private String report = "You ";
 	private CvMat image;
+	private Uri imageUri;
+	private Uri thumbUri;
 	private FacialFeatures features;
 	
 	
 	public ReportData(FacialFeatures f, CvMat image) {
-		this.image = image;
+		// make image smaller cause of memory probs
+		if (image.rows() > 800) {
+			this.image = ImageConverter.cvMatResize(image, 800);	
+			image = null; // let this junk be garbage collected as its a potentially huge file (8MP on my phone)
+		} else
+			this.image = image;
+		
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
@@ -154,12 +163,16 @@ public class ReportData {
 		Nose nose = f.getNose();
 		Mouth mouth = f.getMouth();
 		
-		this.image = ImageConverter.cvGetFace(image, face.getFaceQuadrant(face));
-		
 		if(face == null || face.getBounds() == null) {
 			features = null;
 			return;
-		}
+		}		
+
+		// resize image to crop to the face for prettier output
+		this.image = ImageConverter.cvGetFace(this.image, face.getBounds());
+		
+		saveToFile();
+		
 		if(eyes != null && eyes.getBounds() != null) {
 			features.add(new ReportFeature(f.getForeheadHeight(), AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
 			features.add(new ReportFeature(FacialFeature.getRelativeArea(face, eyes), AVG_EYE_SIZE, ABOVE_AVERAGE_EYE_SIZE, BELOW_AVERAGE_EYE_SIZE));
@@ -175,7 +188,6 @@ public class ReportData {
 			//features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
 			features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
 		}
-		
 		
 		Collections.sort(features);
 		
@@ -200,9 +212,65 @@ public class ReportData {
 		return image;
 	}
 	
-	public Bitmap getBitmap() {		
-		return ImageConverter.cvMatToBitmap(image);
+	public Uri getImageUri() {
+		if (imageUri != null)
+			return imageUri;
+		
+		saveToFile();
+		return imageUri;
 	}
+	
+	public Uri getThumbUri() {
+		if (thumbUri != null)
+			return thumbUri;
+		
+		saveToFile();
+		return thumbUri;
+	}
+	
+	private void saveToFile() {
+		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String title = form.format(new Date()) + ".jpg";
+		
+		Bitmap picture = ImageConverter.cvMatToBitmap(image);
+		
+		File picFile = null;
+		File thumbFile = null;
+		try {
+			File picDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy");
+			File thumbDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/Thumbs");
+			
+			picDir.mkdirs();
+			thumbDir.mkdirs();
+			
+			picFile = new File(picDir, title);
+			thumbFile = new File(thumbDir, title);
+			
+			FileOutputStream picOut = new FileOutputStream(picFile);
+			FileOutputStream thumbOut = new FileOutputStream(thumbFile);
+			
+			picture.compress(Bitmap.CompressFormat.JPEG, 80, picOut);
+			Bitmap.createScaledBitmap(picture, 200, 200, true).compress(Bitmap.CompressFormat.JPEG, 80, thumbOut);
+			
+			picOut.flush();	picOut.close();
+			thumbOut.flush(); thumbOut.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}			
+		
+		thumbUri = Uri.fromFile(thumbFile);
+		imageUri = Uri.fromFile(picFile);
+	}
+	
+	// DONT USE THESE ANYMORE, LOADING FROM URI SAVE MEM AND STUFFS - USE getImageUri() or getThumbURI()
+//	private Bitmap getBitmap() {
+//		return ImageConverter.cvMatToBitmap(image);
+//	}
+//	
+//	private Bitmap getThumb() {
+//		return Bitmap.createScaledBitmap(getBitmap(), 200, 200, true);
+//	}
 	
 	private class ReportFeature implements Comparable<ReportFeature> {
 		private double avgDifference;
@@ -238,55 +306,5 @@ public class ReportData {
 			else 
 				return 1;
 		}
-	}
-	
-	public Uri getImageUri() {		
-		Context inContext = ServiceServer.getAndroidContext();	
-//		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-//		String title = form.format(new Date()) + ".jpg";
-		
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
-		String path = Images.Media.insertImage(inContext.getContentResolver(), getBitmap(), "broken", report);
-		return Uri.parse(path);	
-		
-//		File imageFile = null;
-//		File path = inContext.getCacheDir();
-//		
-//		try {
-//			//path.mkdirs();
-//			imageFile = new File(path, title);
-//			FileOutputStream fileOutPutStream = new FileOutputStream(imageFile);
-//			getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, fileOutPutStream);
-//	
-//			fileOutPutStream.flush();
-//			fileOutPutStream.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return Uri.parse("file://" + imageFile.getAbsolutePath());
-		
-
-		
-//		ContentValues values = new ContentValues(3);
-//		values.put(Media.DISPLAY_NAME, title);
-//		values.put(Media.DESCRIPTION, report);
-//		values.put(Media.MIME_TYPE, "image/jpeg");
-//		// Add a new record without the bitmap, but with the values just set.
-//		// insert() returns the URI of the new record.
-//		Uri uri = ServiceServer.getAndroidContext().getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
-//		// Now get a handle to the file for that record, and save the data into it.
-//		// Here, sourceBitmap is a Bitmap object representing the file to save to the database.
-//		try {
-//		    OutputStream outStream = ServiceServer.getAndroidContext().getContentResolver().openOutputStream(uri);
-//		    getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, outStream);
-//		    outStream.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return uri;
-	
 	}
 }
