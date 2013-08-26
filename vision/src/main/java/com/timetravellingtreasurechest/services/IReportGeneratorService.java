@@ -7,5 +7,5 @@ import com.timetravellingtreasurechest.vision.FacialFeatures;
 public interface IReportGeneratorService {
 
 	public ReportData getReport(FacialFeatures features, CvMat originalImage);
-
+	public void saveToFile(ReportData data);
 }
