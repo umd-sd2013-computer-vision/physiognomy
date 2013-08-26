@@ -142,10 +142,10 @@ public class ReportData {
 		"Further, you "
 	};
 	
-	private String report = "You ";
-	private CvMat image;
-	private Uri imageUri;
-	private Uri thumbUri;
+	public String report = "You ";
+	public CvMat image;
+	public Uri imageUri;
+	public Uri thumbUri;
 	private FacialFeatures features;
 	
 	
@@ -193,8 +193,8 @@ public class ReportData {
 		
 		// resize image to crop to the face for prettier output
 		this.image = ImageConverter.cvGetFace(this.image, face.getBounds());
-
-		saveToFile();
+		
+		ServiceServer.getReportGeneratorService().saveToFile(this);
 	}
 	
 	public ReportData(String picUri, String thumbUri, String report) {
@@ -223,7 +223,7 @@ public class ReportData {
 		if (imageUri != null)
 			return imageUri;
 		
-		saveToFile();
+		ServiceServer.getReportGeneratorService().saveToFile(this);
 		return imageUri;
 	}
 	
@@ -231,46 +231,8 @@ public class ReportData {
 		if (thumbUri != null)
 			return thumbUri;
 		
-		saveToFile();
+		ServiceServer.getReportGeneratorService().saveToFile(this);
 		return thumbUri;
-	}
-	
-	private void saveToFile() {
-		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-		String title = form.format(new Date()) + ".jpg";
-		
-		Bitmap picture = ImageConverter.cvMatToBitmap(image);
-		
-		File picFile = null;
-		File thumbFile = null;
-		try {
-			File picDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy");
-			File thumbDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/Thumbs");
-			
-			picDir.mkdirs();
-			thumbDir.mkdirs();
-			
-			picFile = new File(picDir, title);
-			thumbFile = new File(thumbDir, title);
-			
-			FileOutputStream picOut = new FileOutputStream(picFile);
-			FileOutputStream thumbOut = new FileOutputStream(thumbFile);
-			
-			picture.compress(Bitmap.CompressFormat.JPEG, 80, picOut);
-			Bitmap.createScaledBitmap(picture, 200, 200, true).compress(Bitmap.CompressFormat.JPEG, 80, thumbOut);
-			
-			picOut.flush();	picOut.close();
-			thumbOut.flush(); thumbOut.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}			
-		
-		thumbUri = Uri.fromFile(thumbFile);
-		imageUri = Uri.fromFile(picFile);
-		
-		DatabaseService db = new DatabaseService(ServiceServer.getAndroidContext());
-		db.addReport(imageUri.getPath(), thumbUri.getPath(), report);
 	}
 	
 	// DONT USE THESE ANYMORE, LOADING FROM URI SAVE MEM AND STUFFS - USE getImageUri() or getThumbURI()

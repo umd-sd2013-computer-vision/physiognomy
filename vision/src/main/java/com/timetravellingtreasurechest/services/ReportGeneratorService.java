@@ -1,6 +1,17 @@
 package com.timetravellingtreasurechest.services;
 
 import static com.googlecode.javacv.cpp.opencv_core.*;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
+
 import com.googlecode.javacv.CanvasFrame;
 import com.googlecode.javacv.cpp.opencv_core.CvFont;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
@@ -12,6 +23,11 @@ public class ReportGeneratorService implements IReportGeneratorService {
 	@Override
 	public ReportData getReport(FacialFeatures features, CvMat originalImage) {
 		return new ReportData(features, originalImage);
+	}
+	
+	@Override
+	public void saveToFile(ReportData d) {
+		return;
 	}
 
 //	@Override
