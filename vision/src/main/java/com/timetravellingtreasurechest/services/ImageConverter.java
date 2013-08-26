@@ -2,17 +2,13 @@ package com.timetravellingtreasurechest.services;
 
 import static com.googlecode.javacv.cpp.opencv_core.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
-
-import java.io.File;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.os.Environment;
 
 import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
-import com.googlecode.javacv.cpp.opencv_highgui;
+import com.timetravellingtreasurechest.features.FacialFeature;
 
 public class ImageConverter {
 	public static CvMat getCvMatFromRawImage(byte[] picture, Rect rect, boolean isNV21) {
@@ -65,6 +61,17 @@ public class ImageConverter {
 		Bitmap bmp = Bitmap.createBitmap(in.cols(), in.rows(), Bitmap.Config.ARGB_8888);
 		bmp.copyPixelsFromBuffer(in.getByteBuffer());
 		return bmp;		
+	}
+	
+	public static CvMat cvGetFace(CvMat in, CvRect face) {
+		double aspect = ((double) in.rows()) / in.cols();
+		int smallHeight = 400;
+		int smallWidth = (int) (((double) smallHeight) / aspect);
+		int scale = in.rows() / smallHeight;
+		
+		CvRect largeFace = new CvRect(face.x() * scale, face.y() * scale, face.width() * scale, face.height() * scale);
+		
+		return FacialFeature.crop(in, largeFace);
 	}
 	
 //	public static CvMat bitmapToCvMat(Bitmap in) {

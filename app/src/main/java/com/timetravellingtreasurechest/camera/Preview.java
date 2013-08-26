@@ -4,11 +4,16 @@ package com.timetravellingtreasurechest.camera;
 import java.io.IOException;
 import java.util.List;
 
+import com.timetravellingtreasurechest.services.ServiceServer;
+
 import android.content.Context;
 import android.hardware.Camera;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 public class Preview extends SurfaceView implements Callback {
 
@@ -33,7 +38,15 @@ public class Preview extends SurfaceView implements Callback {
 //        parameters.setPreviewSize(width, height);
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         parameters.setPreviewSize(previewSizes.get(0).width, previewSizes.get(0).height);
-        camera.setParameters(parameters);
+        
+        ServiceServer.getAndroidContext();
+		Display display = ((WindowManager)ServiceServer.getAndroidContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        if(display.getRotation() == Surface.ROTATION_0)
+            camera.setDisplayOrientation(90);
+        else if(display.getRotation() == Surface.ROTATION_270)
+            camera.setDisplayOrientation(180);
+        
+        camera.setParameters(parameters);        
         camera.startPreview();
 	}
 	

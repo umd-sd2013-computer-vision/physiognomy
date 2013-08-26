@@ -39,6 +39,7 @@ public class ManageReportActivity extends Activity {
 	                    sharingIntent.setType("image/jpeg");
 	                    sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Physiognomy reading!");
 	                    sharingIntent.putExtra(Intent.EXTRA_TEXT, MainActivity.latestReport.getReportText());
+	                    sharingIntent.putExtra("sms_body", MainActivity.latestReport.getReportText());
 	                    sharingIntent.putExtra(Intent.EXTRA_STREAM, MainActivity.latestReport.getImageUri());
 	                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
 //	                	Intent myIntent = new Intent();

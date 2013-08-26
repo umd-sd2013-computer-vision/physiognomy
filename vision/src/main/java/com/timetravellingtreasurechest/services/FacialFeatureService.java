@@ -39,10 +39,10 @@ public class FacialFeatureService implements IFacialFeatureService {
 		CvMat final_image = getGrayedImage(getResizedImage(image));
 		
 		FacialFeatures features = new FacialFeatures(final_image);
-		for (int i = 0; i < 4 && features.getFace() == null; i++) {
-			final_image = cvRotateStep(final_image,i+1);
-			features = new FacialFeatures(final_image);
-		}
+//		for (int i = 0; i < 4 && features.getFace() == null; i++) {
+//			final_image = cvRotateStep(final_image,i+1);
+//			features = new FacialFeatures(final_image);
+//		}
 
 		return features;
 	}
@@ -56,6 +56,7 @@ public class FacialFeatureService implements IFacialFeatureService {
 	    cvResize(src, dest, CV_INTER_LINEAR);
 	    return dest;
 	} 
+	
 	private static CvMat cvRotateStep(CvMat in, int steps) {
 	    CvMat rotated;
 

@@ -19,7 +19,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.timetravellingtreasurechest.app.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:theme="@android:style/Theme.Black" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,11 +29,12 @@
         </activity>
         <activity
             android:name="com.timetravellingtreasurechest.gui.ManageReportActivity"
-            android:theme="@android:style/Theme.Dialog" >
+            android:theme="@android:style/Theme.Black" >
         </activity>
         <activity
             android:name="com.timetravellingtreasurechest.gui.ShareActivity"
-            android:label="@string/title_activity_share" android:theme="@android:style/Theme.Dialog">
+            android:label="@string/title_activity_share" 
+            android:theme="@android:style/Theme.Black">
         </activity>
     </application>
 

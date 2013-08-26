@@ -1,52 +1,33 @@
 package com.timetravellingtreasurechest.report;
 
-import static com.googlecode.javacv.cpp.opencv_core.CV_8UC2;
-import static com.googlecode.javacv.cpp.opencv_imgproc.CV_BGR5652BGR;
-import static com.googlecode.javacv.cpp.opencv_imgproc.cvCvtColor;
-
-import java.awt.Graphics;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import android.provider.MediaStore.Images.Media;
+import android.content.ContentValues;
+
+import java.io.OutputStream;
+
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.provider.MediaStore.Images;
 
-import com.googlecode.javacv.cpp.opencv_core;
-import com.googlecode.javacv.cpp.opencv_core.CvArr;
-import com.googlecode.javacv.cpp.opencv_core.CvFont;
-import com.googlecode.javacv.cpp.opencv_core.CvPoint;
-import com.googlecode.javacv.cpp.opencv_core.CvScalar;
-import com.googlecode.javacv.cpp.opencv_highgui;
-import com.googlecode.javacv.cpp.opencv_imgproc;
 import com.googlecode.javacv.cpp.opencv_core.CvMat;
-import com.timetravellingtreasurechest.features.Eyes;
-import com.timetravellingtreasurechest.features.Face;
-import com.timetravellingtreasurechest.features.FacialFeature;
-import com.timetravellingtreasurechest.features.Mouth;
-import com.timetravellingtreasurechest.features.Nose;
+import com.timetravellingtreasurechest.features.*;
 import com.timetravellingtreasurechest.services.ImageConverter;
 import com.timetravellingtreasurechest.services.ServiceServer;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
-public class ReportData implements Serializable {
-	
-	private static final long serialVersionUID = 6300208314239945582L;
+public class ReportData {
 	
 	private static final double AVG_FOREHEAD_HEIGHT = 0.2939684744147797;
 	private static final double AVG_EYE_SIZE = 0.057461373502253284;
@@ -161,17 +142,20 @@ public class ReportData implements Serializable {
 	
 	private String report = "You ";
 	private CvMat image;
-	private FacialFeatures features; 
+	private FacialFeatures features;
+	
 	
 	public ReportData(FacialFeatures f, CvMat image) {
-		this.image = ImageConverter.cvMatResize(image,800);
+		this.image = image;
 		this.features = f;
 		List<ReportFeature> features = new ArrayList<ReportFeature>();
 		Face face = f.getFace();
 		Eyes eyes = f.getEyes();
 		Nose nose = f.getNose();
 		Mouth mouth = f.getMouth();
-				
+		
+		this.image = ImageConverter.cvGetFace(image, face.getFaceQuadrant(face));
+		
 		if(face == null || face.getBounds() == null) {
 			features = null;
 			return;
@@ -198,6 +182,10 @@ public class ReportData implements Serializable {
 		report += features.get(0).getReportText();
 		report += SECOND_SENTANCE_PREFIX[(int) (Math.random() * SECOND_SENTANCE_PREFIX.length)];
 		report += features.get(1).getReportText();
+	}
+	
+	public boolean reportSucessful() {
+		return !(report.compareTo("You ") == 0);
 	}
 	
 	public String getReportText() {
@@ -253,22 +241,21 @@ public class ReportData implements Serializable {
 	}
 	
 	public Uri getImageUri() {		
-		Context inContext = ServiceServer.getAndroidContext();
-		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
-		String title = form.format(new Date()) + ".jpg";		
+		Context inContext = ServiceServer.getAndroidContext();	
+//		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+//		String title = form.format(new Date()) + ".jpg";
 		
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, bytes);
-		String path = Images.Media.insertImage(inContext.getContentResolver(), getBitmap(), title, null);
-		return Uri.parse(path);
+		String path = Images.Media.insertImage(inContext.getContentResolver(), getBitmap(), "broken", report);
+		return Uri.parse(path);	
 		
 //		File imageFile = null;
-//		SimpleDateFormat form = new SimpleDateFormat("y-m-d_HH-mm-ss");
 //		File path = inContext.getCacheDir();
 //		
 //		try {
 //			//path.mkdirs();
-//			imageFile = new File(path, form.format(new Date()) + ".jpg");
+//			imageFile = new File(path, title);
 //			FileOutputStream fileOutPutStream = new FileOutputStream(imageFile);
 //			getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, fileOutPutStream);
 //	
@@ -279,5 +266,27 @@ public class ReportData implements Serializable {
 //		}
 //		
 //		return Uri.parse("file://" + imageFile.getAbsolutePath());
+		
+
+		
+//		ContentValues values = new ContentValues(3);
+//		values.put(Media.DISPLAY_NAME, title);
+//		values.put(Media.DESCRIPTION, report);
+//		values.put(Media.MIME_TYPE, "image/jpeg");
+//		// Add a new record without the bitmap, but with the values just set.
+//		// insert() returns the URI of the new record.
+//		Uri uri = ServiceServer.getAndroidContext().getContentResolver().insert(Media.EXTERNAL_CONTENT_URI, values);
+//		// Now get a handle to the file for that record, and save the data into it.
+//		// Here, sourceBitmap is a Bitmap object representing the file to save to the database.
+//		try {
+//		    OutputStream outStream = ServiceServer.getAndroidContext().getContentResolver().openOutputStream(uri);
+//		    getBitmap().compress(Bitmap.CompressFormat.JPEG, 80, outStream);
+//		    outStream.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return uri;
+	
 	}
 }

@@ -68,7 +68,7 @@ public class AndroidFacialFeatureService implements IFacialFeatureService {
 		return features;
 	}
 	
-	private static CvMat cvRotateStep(CvMat in, int steps) {
+	public static CvMat cvRotateStep(CvMat in, int steps) {
 	    CvMat rotated;
 
 	    if (steps != 2)

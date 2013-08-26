@@ -9,11 +9,16 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
@@ -29,25 +34,20 @@ import com.googlecode.javacv.cpp.opencv_highgui;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.camera.Preview;
 import com.timetravellingtreasurechest.report.ReportData;
+import com.timetravellingtreasurechest.services.*;
 import com.timetravellingtreasurechest.services.AndroidFacialFeatureService;
-import com.timetravellingtreasurechest.services.AndroidReportGeneratorService;
-import com.timetravellingtreasurechest.services.FacialFeatureService;
-import com.timetravellingtreasurechest.services.IFacialFeatureService;
-import com.timetravellingtreasurechest.services.IReportGeneratorService;
-import com.timetravellingtreasurechest.services.ImageConverter;
-import com.timetravellingtreasurechest.services.ReportGeneratorService;
-import com.timetravellingtreasurechest.services.ServiceServer;
 
 public class MainActivity extends Activity {
 
 	public static String REPORT = "ReportData";
 	// Dependencies
-	Preview cameraSurfaceView;
+	public static Preview cameraSurfaceView;
 	public static ReportData latestReport;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		ServiceServer.setAndroidContext(getApplicationContext());
 		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(
 				this.getApplicationContext()));
@@ -90,9 +90,21 @@ public class MainActivity extends Activity {
 					.getCvMatFromRawImage(picture, new Rect(0, 0, size.width,
 							size.height), camera.getParameters()
 							.getPictureFormat() == ImageFormat.NV21);
+			
+			Display display = ((WindowManager)ServiceServer.getAndroidContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+						
+	        if(display.getRotation() == Surface.ROTATION_0)
+	        	cvPicture = AndroidFacialFeatureService.cvRotateStep(cvPicture, 3);
+//	        else if (display.getRotation() == Surface.ROTATION_90)
+//	        	cvPicture = AndroidFacialFeatureService.cvRotateStep(cvPicture, 4);
+	        else if (display.getRotation() == Surface.ROTATION_180)
+	        	cvPicture = AndroidFacialFeatureService.cvRotateStep(cvPicture, 1);
+	        else if (display.getRotation() == Surface.ROTATION_270)
+	        	cvPicture = AndroidFacialFeatureService.cvRotateStep(cvPicture, 2);
+	       
+			
 			generateAndViewReport(cvPicture);
-
-			cameraSurfaceView.startPreview();
+			//cameraSurfaceView.startPreview();
 		}
 	}
 
@@ -105,6 +117,14 @@ public class MainActivity extends Activity {
 				.getReport(
 						ServiceServer.getFacialFeatureService().getFeatures(
 								cvPicture), cvPicture);
+		
+		if (report.reportSucessful() == false) {
+			Toast toast = Toast.makeText(ServiceServer.getAndroidContext(), "No face detected", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+			toast.show();
+			cameraSurfaceView.startPreview();
+			return;
+		}
 		
 		//myIntent.putExtra(MainActivity.REPORT, report);
 		if(latestReport != null && latestReport.getOriginalImage() != null)
