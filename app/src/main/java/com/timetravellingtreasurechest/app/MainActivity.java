@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.Surface;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -47,6 +48,7 @@ public class MainActivity extends Activity {
 				.setReportGeneratorService(new AndroidReportGeneratorService());
 
 		setContentView(R.layout.activity_main);
+		addLegacyOverflowButton(this.getWindow());
 
 		// Setup the FrameLayout with the Camera Preview Screen
 		cameraSurfaceView = new Preview(this);
@@ -126,6 +128,20 @@ public class MainActivity extends Activity {
 		startActivity(myIntent);
 		System.out.println("Activity returned");
 	}
+	
+	public static void addLegacyOverflowButton(Window window) {
+		if (window.peekDecorView() == null) {
+			throw new RuntimeException("Must call addLegacyOverflowButton() after setContentView()");
+		}
+		try {
+			window.addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
+		}
+		catch (NoSuchFieldException e) {
+			// Ignore since this field won't exist in most versions of Android
+		} catch (IllegalAccessException e) {
+			System.out.println("Could not access FLAG_NEEDS_MENU_KEY in addLegacyOverflowButton()");
+	}
+}
 
 	@SuppressWarnings("unused")
 	private CvMat getPictureFromFile(String name) /* throws IOException */{
@@ -135,9 +151,10 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+        // Inflate the menu; this adds items to the action bar if it is present.
+    	menu.add("Report History").setIntent(new Intent().setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity"));
+    	getMenuInflater().inflate(R.menu.report_history, menu);
+        return true;
 	}
 
 }

@@ -33,6 +33,7 @@ public class ManageReportActivity extends Activity {
         MainActivity.cameraSurfaceView.stopPreview();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_manage_report);
+		MainActivity.addLegacyOverflowButton(this.getWindow());
         TextView reportText = (TextView)this.findViewById(R.id.reportText);
         usingReport = MainActivity.latestReport;//(ReportData) getIntent().getSerializableExtra(MainActivity.REPORT);
         reportText.setText(usingReport == null ? "Missing Report" : usingReport.getReportText());
