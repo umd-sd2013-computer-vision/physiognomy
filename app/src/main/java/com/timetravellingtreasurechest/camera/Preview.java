@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -14,14 +15,18 @@ public class Preview extends SurfaceView implements Callback {
 
 	private SurfaceHolder holder;
     private Camera camera;
+    private Integer cameraId;
+    private Parameters workingParams;
 	
-	@SuppressWarnings("deprecation")
-	public Preview(Context context) {
+	public Preview(Context context, int cameraId) {
 		super(context);
 		
 		this.holder = this.getHolder();
         this.holder.addCallback(this);
         this.holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        this.camera = Camera.open(cameraId);
+        this.cameraId = cameraId;
+        this.workingParams = camera.getParameters();
 	}
 
 	@Override
@@ -29,47 +34,79 @@ public class Preview extends SurfaceView implements Callback {
 
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
+		camera.stopPreview();
         Camera.Parameters parameters = camera.getParameters();
-//        parameters.setPreviewSize(width, height);
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         parameters.setPreviewSize(previewSizes.get(0).width, previewSizes.get(0).height);
         camera.setParameters(parameters);
         camera.startPreview();
 	}
 	
-	public void startPreview() { camera.startPreview(); }
+	public void startPreview() {
+		if(camera == null) {
+			setupCameraView();
+		}
+		camera.startPreview(); 
+	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder arg0) {
-		try
-        {
-                //Open the Camera in preview mode
-                this.camera = Camera.open();
-                this.camera.setPreviewDisplay(this.holder);
-        }
-        catch(IOException ioe)
-        {
-                ioe.printStackTrace(System.out);
-        }
+		setupCameraView();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder arg0) {
-		// Surface will be destroyed when replaced with a new screen
-        //Always make sure to release the Camera instance
-        camera.stopPreview();
-        camera.release();
-        camera = null;
-
+        stop();
 	}
+	
+	public void setupCameraView() {
+		try
+        {
+            //Open the Camera in preview mode
+			stop();
+            this.camera = Camera.open(this.cameraId);
+            camera.setParameters(this.workingParams);
+            this.camera.setPreviewDisplay(this.holder);
+        }
+        catch(IOException ioe)
+        {
+            ioe.printStackTrace(System.out);
+        }
+	}
+	
+	public void stop() {
+		if(camera != null) {
+			camera.stopPreview();
+	        camera.release();
+	        camera = null;
+		}
+	}
+	
 
-	public Camera getCamera()
-    {
+	public Camera getCamera() {
             return this.camera;
     }
 
-	public void stopPreview() {
-		camera.stopPreview();
+	public Parameters getParameters() {
+		return this.workingParams;
+	}
+	
+	public void setParameters(Parameters newParams) {
+		this.workingParams = newParams;
+		if(camera != null)
+			camera.setParameters(this.workingParams);
+	}
+	
+	public Camera setCamera(int cameraId) {
+		if(cameraId != this.cameraId) {
+			stop();
+			this.cameraId = cameraId;
+			setupCameraView();
+		}
+		return camera;
+	}
+	public Integer getCameraId() {
+		return cameraId;
 	}
 
 }

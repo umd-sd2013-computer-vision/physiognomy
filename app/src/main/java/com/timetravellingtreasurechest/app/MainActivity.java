@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.googlecode.javacv.cpp.opencv_highgui;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.camera.Preview;
+import com.timetravellingtreasurechest.gui.ConfigureCameraActivity;
+import com.timetravellingtreasurechest.gui.ManageReportActivity;
 import com.timetravellingtreasurechest.report.ReportData;
 import com.timetravellingtreasurechest.services.AndroidFacialFeatureService;
 import com.timetravellingtreasurechest.services.AndroidReportGeneratorService;
@@ -31,8 +34,8 @@ public class MainActivity extends Activity {
 
 	public static String REPORT = "ReportData";
 	// Dependencies
-	Preview cameraSurfaceView;
 	public static ReportData latestReport;
+	public static Preview cameraSurfaceView = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,57 +49,60 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		// Setup the FrameLayout with the Camera Preview Screen
-		cameraSurfaceView = new Preview(this);
+		if(cameraSurfaceView == null) {
+			cameraSurfaceView = new Preview(this, Camera.CameraInfo.CAMERA_FACING_BACK);
+		}
 		FrameLayout preview = (FrameLayout) this
 				.findViewById(R.id.PreviewFrame);
-		if (preview == null) {
-			System.out.println("PreviewFrame not found!");
-		} else {
-			System.out.println("PreviewFrame found");
-			preview.addView(cameraSurfaceView);
-		}
+		preview.addView(cameraSurfaceView);		
 
 		Button takeAPicture = (Button) this.findViewById(R.id.TakePhoto);
 		takeAPicture.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// generateAndViewReport(getPictureFromFile("face"));
-				Camera camera = cameraSurfaceView.getCamera();
-				AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
-				camera.takePicture(null, null, new HandlePictureStorage());
+				handleNewPhoto();
 			}
 		});
 
+	}
+
+	private void handleNewPhoto() {
+		// generateAndViewReport(getPictureFromFile("face"));
+		Camera camera = cameraSurfaceView.getCamera();
+		try {
+			AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			mgr.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+		} catch (Exception e) {
+			System.out.println("Failed to mute camera");
+			e.printStackTrace();
+		}
+		camera.takePicture(null, null, new HandlePictureStorage());
 	}
 
 	private class HandlePictureStorage implements PictureCallback {
 
 		@Override
 		public void onPictureTaken(byte[] picture, Camera camera) {
-			cameraSurfaceView.stopPreview();
+			cameraSurfaceView.stop();
 			Size size = camera.getParameters().getPictureSize();
 			CvMat cvPicture = ImageConverter
 					.getCvMatFromRawImage(picture, new Rect(0, 0, size.width,
 							size.height), camera.getParameters()
 							.getPictureFormat() == ImageFormat.NV21);
 			generateAndViewReport(cvPicture);
-
-			cameraSurfaceView.startPreview();
+			cameraSurfaceView.setupCameraView();
 		}
 	}
 
 	private void generateAndViewReport(CvMat cvPicture) {
 		Intent myIntent = new Intent();
-		myIntent.setClassName(MainActivity.this,
-				"com.timetravellingtreasurechest.gui.ManageReportActivity");
-
+		myIntent.setClass(MainActivity.this,ManageReportActivity.class);
 		ReportData report = ServiceServer.getReportGeneratorService()
 				.getReport(
 						ServiceServer.getFacialFeatureService().getFeatures(
 								cvPicture), cvPicture);
-		
-		//myIntent.putExtra(MainActivity.REPORT, report);
-		if(latestReport != null && latestReport.getOriginalImage() != null)
+
+		// myIntent.putExtra(MainActivity.REPORT, report);
+		if (latestReport != null && latestReport.getOriginalImage() != null)
 			latestReport.getOriginalImage().deallocate();
 		latestReport = report;
 		System.out.println("Starting new activity");
@@ -117,4 +123,28 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.camera_config:
+			cameraSurfaceView.stop();
+			Intent myIntent = new Intent();
+			myIntent.setClass(MainActivity.this,ConfigureCameraActivity.class);
+			startActivity(myIntent);
+			//cameraSurfaceView.startPreview();
+			return true;
+		case R.id.report_history:
+			System.out.println("Handle report history");
+			return true;
+		default:
+			System.out.println("Some other menu was pressed?");
+			return false;
+		}
+	}
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    cameraSurfaceView.stop();
+	}
 }
