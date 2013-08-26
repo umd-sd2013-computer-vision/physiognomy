@@ -4,6 +4,7 @@ import com.timetravellingtreasurechest.app.MainActivity;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.report.ReportData;
 import com.timetravellingtreasurechest.services.ImageConverter;
+import com.timetravellingtreasurechest.services.ServiceServer;
 import com.timetravellingtreasurechest.share.IReportSharingService;
 import com.timetravellingtreasurechest.share.ReportSharingService;
 
@@ -63,7 +64,8 @@ public class ManageReportActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-         getMenuInflater().inflate(R.menu.main, menu);
+    	menu.add("Report History").setIntent(new Intent().setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity"));
+    	getMenuInflater().inflate(R.menu.report_history, menu);
         return true;
     }
 }

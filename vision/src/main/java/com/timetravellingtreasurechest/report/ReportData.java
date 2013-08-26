@@ -26,6 +26,7 @@ import com.googlecode.javacv.cpp.opencv_core.CvMat;
 import com.timetravellingtreasurechest.features.*;
 import com.timetravellingtreasurechest.services.ImageConverter;
 import com.timetravellingtreasurechest.services.ServiceServer;
+import com.timetravellingtreasurechest.services.DatabaseService;
 import com.timetravellingtreasurechest.vision.FacialFeatures;
 
 public class ReportData {
@@ -167,11 +168,6 @@ public class ReportData {
 			features = null;
 			return;
 		}		
-
-		// resize image to crop to the face for prettier output
-		this.image = ImageConverter.cvGetFace(this.image, face.getBounds());
-		
-		saveToFile();
 		
 		if(eyes != null && eyes.getBounds() != null) {
 			features.add(new ReportFeature(f.getForeheadHeight(), AVG_FOREHEAD_HEIGHT, ABOVE_AVERAGE_FOREHEAD_HEIGHT, BELOW_AVERAGE_FOREHEAD_HEIGHT));
@@ -194,6 +190,17 @@ public class ReportData {
 		report += features.get(0).getReportText();
 		report += SECOND_SENTANCE_PREFIX[(int) (Math.random() * SECOND_SENTANCE_PREFIX.length)];
 		report += features.get(1).getReportText();
+		
+		// resize image to crop to the face for prettier output
+		this.image = ImageConverter.cvGetFace(this.image, face.getBounds());
+
+		saveToFile();
+	}
+	
+	public ReportData(String picUri, String thumbUri, String report) {
+		this.imageUri = Uri.parse("file://" + picUri);
+		this.thumbUri = Uri.parse("file://" + thumbUri);
+		this.report = report;
 	}
 	
 	public boolean reportSucessful() {
@@ -261,6 +268,9 @@ public class ReportData {
 		
 		thumbUri = Uri.fromFile(thumbFile);
 		imageUri = Uri.fromFile(picFile);
+		
+		DatabaseService db = new DatabaseService(ServiceServer.getAndroidContext());
+		db.addReport(imageUri.getPath(), thumbUri.getPath(), report);
 	}
 	
 	// DONT USE THESE ANYMORE, LOADING FROM URI SAVE MEM AND STUFFS - USE getImageUri() or getThumbURI()

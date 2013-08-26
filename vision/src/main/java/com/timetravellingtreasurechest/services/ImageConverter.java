@@ -75,8 +75,8 @@ public class ImageConverter {
 		largeFace.y(Math.max(largeFace.y() - zoomFactor,0));
 		
 		// increase width and height by 2 x zoom (to account for x and y moving) ... max prevents from moving coords beyond edges
-		largeFace.width(Math.min(largeFace.width() + zoomFactor * 2, in.cols()));
-		largeFace.height(Math.min(largeFace.height() + zoomFactor * 2, in.rows()));
+		largeFace.width(Math.min(largeFace.width() + zoomFactor * 2, in.cols() - largeFace.x()));
+		largeFace.height(Math.min(largeFace.height() + zoomFactor * 2, in.rows() - largeFace.y()));
 		
 		return FacialFeature.crop(in, largeFace);
 	}
