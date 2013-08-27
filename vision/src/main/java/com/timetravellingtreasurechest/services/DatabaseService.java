@@ -1,5 +1,7 @@
 package com.timetravellingtreasurechest.services;
 
+import java.io.File;
+
 import com.timetravellingtreasurechest.report.ReportData;
 
 import android.content.ContentValues;
@@ -62,7 +64,7 @@ public class DatabaseService extends SQLiteOpenHelper {
 		return cursor.getString(0);
 	}
 	
-	public ReportData getReportData(String thumbPath) {
+	public ReportData getReportDataFromThumb(String thumbPath) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		
 		Cursor cursor = db.query(TABLE_REPORTS, new String [] { KEY_PIC_PATH, KEY_THUMB_PATH, KEY_REPORT }, KEY_THUMB_PATH + "=?", new String[] {thumbPath}, null, null, null, null);
@@ -73,5 +75,37 @@ public class DatabaseService extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 		
 		return new ReportData(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+	}
+	
+	public ReportData getReportDataFromPicture(String imagePath) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		Cursor cursor = db.query(TABLE_REPORTS, new String [] { KEY_PIC_PATH, KEY_THUMB_PATH, KEY_REPORT }, KEY_PIC_PATH + "=?", new String[] {imagePath}, null, null, null, null);
+		if (cursor.getCount() == 0)
+			return null;
+		
+		if (cursor != null)
+			cursor.moveToFirst();
+		
+		return new ReportData(cursor.getString(0), cursor.getString(1), cursor.getString(2));
+	}
+	
+	public void deleteReport(String imagePath) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		
+		ReportData report = getReportDataFromPicture(imagePath);
+		File image = new File(report.getImageUri().getPath());
+		File thumbnail = new File(report.getThumbUri().getPath());
+		
+		try {			
+			if (image.exists() && !image.isDirectory())
+				image.delete();
+			if (thumbnail.exists() && !thumbnail.isDirectory())
+				thumbnail.delete();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		
+		db.delete(TABLE_REPORTS, KEY_PIC_PATH + "=?", new String[] { imagePath });
 	}
 }

@@ -26,6 +26,9 @@ public class AndroidReportGeneratorService implements IReportGeneratorService {
 	
 	@Override
 	public void saveToFile(ReportData d) {
+		if (!d.reportSucessful())
+			return;
+		
 		SimpleDateFormat form = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		String title = form.format(new Date()) + ".jpg";
 		

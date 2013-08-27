@@ -48,7 +48,7 @@ public class ReportHistoryActivity extends ListActivity {
 		for(int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if(!file.isHidden() && !file.isDirectory() && db.getReportText(file.getAbsolutePath()) != null)
-				reports.add(db.getReportData(file.getAbsolutePath()));
+				reports.add(db.getReportDataFromThumb(file.getAbsolutePath()));
 		}
 		
 		ReportDataAdapter adapter = new ReportDataAdapter(this, R.layout.row, reports);
@@ -60,7 +60,7 @@ public class ReportHistoryActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File file = new File(reports.get(position).getImageUri().getPath());
 		
-		MainActivity.latestReport = db.getReportData(reports.get(position).getThumbUri().getPath());
+		MainActivity.latestReport = db.getReportDataFromThumb(reports.get(position).getThumbUri().getPath());
 		Intent myIntent = new Intent();
 		myIntent.setClassName(this, "com.timetravellingtreasurechest.gui.ManageReportActivity");
 		startActivity(myIntent);

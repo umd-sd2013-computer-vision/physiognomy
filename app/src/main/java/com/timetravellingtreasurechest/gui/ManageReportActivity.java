@@ -3,6 +3,7 @@ package com.timetravellingtreasurechest.gui;
 import com.timetravellingtreasurechest.app.MainActivity;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.report.ReportData;
+import com.timetravellingtreasurechest.services.DatabaseService;
 import com.timetravellingtreasurechest.services.ImageConverter;
 import com.timetravellingtreasurechest.services.ServiceServer;
 import com.timetravellingtreasurechest.share.IReportSharingService;
@@ -14,6 +15,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -30,7 +32,7 @@ public class ManageReportActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainActivity.cameraSurfaceView.stopPreview();
+//        MainActivity.cameraSurfaceView.stopPreview();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_manage_report);
 		MainActivity.addLegacyOverflowButton(this.getWindow());
@@ -65,8 +67,30 @@ public class ManageReportActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-    	menu.add("Report History").setIntent(new Intent().setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity"));
+    	menu.add(0, 1, 0, "Report History"); //.setIntent(new Intent().setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity"));
+    	menu.add(0, 2, 0, "Delete Report");
     	getMenuInflater().inflate(R.menu.report_history, menu);
-        return true;
+    	
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	Intent intent;
+    	
+    	switch (item.getItemId()) {
+    	case 1:
+    		intent = new Intent();
+    		intent.setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity");
+    		startActivity(intent);
+    		return true;
+    	case 2:
+    		DatabaseService db = new DatabaseService(ServiceServer.getAndroidContext());
+    		db.deleteReport(MainActivity.latestReport.getImageUri().getPath());
+    		intent = new Intent();
+    		intent.setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.app.MainActivity");
+    		startActivity(intent);
+    		return true;
+    	}
+        return super.onOptionsItemSelected(item);
     }
 }

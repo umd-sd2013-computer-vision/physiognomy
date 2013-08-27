@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
 	       
 			
 			generateAndViewReport(cvPicture);
-			//cameraSurfaceView.startPreview();
+			cameraSurfaceView.startPreview();
 		}
 	}
 
