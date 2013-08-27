@@ -88,6 +88,8 @@ public class ManageReportActivity extends Activity {
     		db.deleteReport(MainActivity.latestReport.getImageUri().getPath());
     		intent = new Intent();
     		intent.setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.app.MainActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
     		startActivity(intent);
     		return true;
     	}
