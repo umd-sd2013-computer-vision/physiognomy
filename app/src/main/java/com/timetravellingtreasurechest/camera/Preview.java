@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.timetravellingtreasurechest.report.ReportData;
 import com.timetravellingtreasurechest.services.ServiceServer;
 
 import android.content.Context;
@@ -54,7 +55,7 @@ public class Preview extends SurfaceView implements Callback {
         // scaled down anyways
         List<Size> sizes = parameters.getSupportedPictureSizes(); // android orders this largest to smallest
         Camera.Size size = sizes.get(sizes.size()-1); // smallest picture size
-        for (int i = sizes.size() - 2; i >= 0 && size.height < 1200; i--)
+        for (int i = sizes.size() - 2; i >= 0 && size.height < ReportData.MAX_HEIGHT; i--)
         	size = sizes.get(i);
         
         parameters.setPictureSize(size.width, size.height);

@@ -40,11 +40,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (getIntent().getBooleanExtra("EXIT", false)) {
-	        Intent i = new Intent(MainActivity.this, MainActivity.class);
-	        startActivity(i);
-	        finish();
-	    }
 		
 		ServiceServer.setAndroidContext(getApplicationContext());
 		ServiceServer.setFacialFeatureService(new AndroidFacialFeatureService(

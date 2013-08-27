@@ -89,8 +89,8 @@ public class ManageReportActivity extends Activity {
     		intent = new Intent();
     		intent.setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.app.MainActivity");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
     		startActivity(intent);
+    		finish(); // clears back history so you cant hit back and see report you just deleted
     		return true;
     	}
         return super.onOptionsItemSelected(item);

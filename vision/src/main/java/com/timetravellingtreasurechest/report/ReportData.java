@@ -142,6 +142,8 @@ public class ReportData {
 		"Further, you "
 	};
 	
+	public static final int MAX_HEIGHT = 1600;
+	
 	public String report = "You ";
 	public CvMat image;
 	public Uri imageUri;
@@ -151,8 +153,8 @@ public class ReportData {
 	
 	public ReportData(FacialFeatures f, CvMat image) {
 		// make image smaller cause of memory probs
-		if (image.rows() > 1200) {
-			this.image = ImageConverter.cvMatResize(image, 1200);	
+		if (image.rows() > MAX_HEIGHT) {
+			this.image = ImageConverter.cvMatResize(image, MAX_HEIGHT);	
 			image = null; // let this junk be garbage collected as its a potentially huge file (8MP on my phone)
 		} else
 			this.image = image;
@@ -184,6 +186,9 @@ public class ReportData {
 			//features.add(new ReportFeature(FacialFeature.getRelativeHeight(face, mouth), AVG_MOUTH_HEIGHT, ABOVE_AVERAGE_MOUTH_HEIGHT, BELOW_AVERAGE_MOUTH_HEIGHT));
 			features.add(new ReportFeature(FacialFeature.getRelativeWidth(face, mouth), AVG_MOUTH_WIDTH, ABOVE_AVERAGE_MOUTH_WIDTH, BELOW_AVERAGE_MOUTH_WIDTH));
 		}
+		
+		if (features.size() <= 1)
+			return;
 		
 		Collections.sort(features);
 		
@@ -220,18 +225,10 @@ public class ReportData {
 	}
 	
 	public Uri getImageUri() {
-		if (imageUri != null)
-			return imageUri;
-		
-		ServiceServer.getReportGeneratorService().saveToFile(this);
 		return imageUri;
 	}
 	
 	public Uri getThumbUri() {
-		if (thumbUri != null)
-			return thumbUri;
-		
-		ServiceServer.getReportGeneratorService().saveToFile(this);
 		return thumbUri;
 	}
 	

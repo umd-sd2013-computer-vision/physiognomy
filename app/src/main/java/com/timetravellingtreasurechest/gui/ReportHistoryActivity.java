@@ -1,6 +1,7 @@
 package com.timetravellingtreasurechest.gui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 
 import com.timetravellingtreasurechest.app.MainActivity;
 import com.timetravellingtreasurechest.app.R;
@@ -17,10 +18,13 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 public class ReportHistoryActivity extends ListActivity {
@@ -57,14 +61,38 @@ public class ReportHistoryActivity extends ListActivity {
 		
 		ListView listView = getListView();
 		listView.setAdapter(adapter);
+		
+		listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+	        @Override
+	        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+	        	new AlertDialog.Builder(ReportHistoryActivity.this)
+	        	.setTitle("Confirm Delete")
+	        	.setMessage("Delete this report?")
+	        	.setIcon(android.R.drawable.ic_dialog_alert)
+	        	.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        	    public void onClick(DialogInterface dialog, int whichButton) {
+	        	    	DatabaseService db = new DatabaseService(getBaseContext());
+	            		db.deleteReport(reports.get(position).getImageUri().getPath());
+	            		Intent intent = new Intent();
+	            		intent.setClassName(ServiceServer.getAndroidContext(), "com.timetravellingtreasurechest.gui.ReportHistoryActivity");
+	            		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            		startActivity(intent);
+	        	    }})
+	        	 .setNegativeButton(android.R.string.no, null).show();
+	        	
+	            return true;
+	        }
+		});
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		File file = new File(reports.get(position).getImageUri().getPath());
 		
 		MainActivity.latestReport = db.getReportDataFromThumb(reports.get(position).getThumbUri().getPath());
-		Intent myIntent = new Intent();
-		myIntent.setClassName(this, "com.timetravellingtreasurechest.gui.ManageReportActivity");
-		startActivity(myIntent);
+		Intent intent = new Intent();
+		intent.setClassName(this, "com.timetravellingtreasurechest.gui.ManageReportActivity");
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
 	}
 }
