@@ -83,6 +83,14 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onPictureTaken(byte[] picture, Camera camera) {
+			if (!android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+				Toast toast = Toast.makeText(ServiceServer.getAndroidContext(), "Please insert an SD card", Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+				toast.show();
+				cameraSurfaceView.startPreview();
+				return;
+			}
+			
 			cameraSurfaceView.stopPreview();
 			Size size = camera.getParameters().getPictureSize();
 			CvMat cvPicture = ImageConverter

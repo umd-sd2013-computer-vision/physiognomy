@@ -151,8 +151,8 @@ public class ReportData {
 	
 	public ReportData(FacialFeatures f, CvMat image) {
 		// make image smaller cause of memory probs
-		if (image.rows() > 800) {
-			this.image = ImageConverter.cvMatResize(image, 800);	
+		if (image.rows() > 1200) {
+			this.image = ImageConverter.cvMatResize(image, 1200);	
 			image = null; // let this junk be garbage collected as its a potentially huge file (8MP on my phone)
 		} else
 			this.image = image;

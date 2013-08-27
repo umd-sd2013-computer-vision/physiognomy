@@ -12,20 +12,16 @@ import com.timetravellingtreasurechest.services.DatabaseService;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class ReportHistoryActivity extends ListActivity {
 	
@@ -44,6 +40,12 @@ public class ReportHistoryActivity extends ListActivity {
 		
 		File f = new File(dirPath);
 		File[] files = f.listFiles();
+		
+		// order files so most recent are nearest the top
+		Arrays.sort(files, new Comparator<File>(){
+		    public int compare(File f1, File f2) {
+		        return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
+		    } });
 
 		for(int i = 0; i < files.length; i++) {
 			File file = files[i];
@@ -65,5 +67,4 @@ public class ReportHistoryActivity extends ListActivity {
 		myIntent.setClassName(this, "com.timetravellingtreasurechest.gui.ManageReportActivity");
 		startActivity(myIntent);
 	}
-
 }

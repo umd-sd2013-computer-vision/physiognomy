@@ -2,12 +2,15 @@ package com.timetravellingtreasurechest.camera;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.timetravellingtreasurechest.services.ServiceServer;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -45,6 +48,18 @@ public class Preview extends SurfaceView implements Callback {
             camera.setDisplayOrientation(90);
         else if(display.getRotation() == Surface.ROTATION_270)
             camera.setDisplayOrientation(180);
+
+        // basically we are sizing the cvmat to 1200 cause of memory issues, if we take a picture of the
+        // smallest size nearst 1200 x 1200 we can not toss around a really really large byte[] that gets
+        // scaled down anyways
+        List<Size> sizes = parameters.getSupportedPictureSizes(); // android orders this largest to smallest
+        Camera.Size size = sizes.get(sizes.size()-1); // smallest picture size
+        for (int i = sizes.size() - 2; i >= 0 && size.height < 1200; i--)
+        	size = sizes.get(i);
+        
+        parameters.setPictureSize(size.width, size.height);
+        
+        System.out.println("camera size - width: " + size.width + "   height: " + size.height);
         
         camera.setParameters(parameters);        
         camera.startPreview();

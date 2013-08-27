@@ -41,8 +41,13 @@ public class DatabaseService extends SQLiteOpenHelper {
 	}
 	
 	public void addReport(String picPath, String thumbPath, String report) {
-		SQLiteDatabase db = this.getWritableDatabase();
+		// basically i had issues with reports being added more than once, i couldnt track down why
+		// i think because of back interaction between activities, so this is easier (quicker) way to fix
+		if (getReportDataFromPicture(picPath) != null)
+			return;
 		
+		SQLiteDatabase db = this.getWritableDatabase();
+				
 		ContentValues values = new ContentValues();
 		values.put(KEY_PIC_PATH, picPath);
 		values.put(KEY_THUMB_PATH, thumbPath);
