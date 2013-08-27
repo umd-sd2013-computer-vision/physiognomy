@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.timetravellingtreasurechest.app.MainActivity;
 import com.timetravellingtreasurechest.app.R;
 import com.timetravellingtreasurechest.report.ReportData;
+import com.timetravellingtreasurechest.services.ReportDataAdapter;
 import com.timetravellingtreasurechest.services.ServiceServer;
 import com.timetravellingtreasurechest.services.DatabaseService;
 
@@ -28,8 +29,7 @@ import android.widget.TextView;
 
 public class ReportHistoryActivity extends ListActivity {
 	
-	private List<String> item = null;
-	private List<String> path = null;
+	private List<ReportData> reports = null;
 	private SimpleDateFormat form = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 	private DatabaseService db = new DatabaseService(ServiceServer.getAndroidContext());
 	
@@ -40,28 +40,27 @@ public class ReportHistoryActivity extends ListActivity {
 	}    
 		
 	private void getDir(String dirPath) {
-		item = new ArrayList<String>();
-		path = new ArrayList<String>();
+		reports = new ArrayList<ReportData>();
 		
 		File f = new File(dirPath);
 		File[] files = f.listFiles();
 
 		for(int i = 0; i < files.length; i++) {
 			File file = files[i];
-			if(!file.isHidden() && !file.isDirectory() && db.getReportText(file.getAbsolutePath()) != null) {
-				item.add(form.format(new Date(file.lastModified())));
-				path.add(file.getAbsolutePath());
-			}
+			if(!file.isHidden() && !file.isDirectory() && db.getReportText(file.getAbsolutePath()) != null)
+				reports.add(db.getReportData(file.getAbsolutePath()));
 		}
-	
-		ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.row, item);
-		setListAdapter(fileList);
+		
+		ReportDataAdapter adapter = new ReportDataAdapter(this, R.layout.row, reports);
+		
+		ListView listView = getListView();
+		listView.setAdapter(adapter);
 	}
 	
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		File file = new File(item.get(position));
+		File file = new File(reports.get(position).getImageUri().getPath());
 		
-		MainActivity.latestReport = db.getReportData(path.get(position));
+		MainActivity.latestReport = db.getReportData(reports.get(position).getThumbUri().getPath());
 		Intent myIntent = new Intent();
 		myIntent.setClassName(this, "com.timetravellingtreasurechest.gui.ManageReportActivity");
 		startActivity(myIntent);

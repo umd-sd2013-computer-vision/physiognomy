@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rowtext"
-android:layout_width="fill_parent"
-android:layout_height="25dp"
-android:textSize="23sp" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="75dp"
+    android:orientation="horizontal" >
+    
+    <ImageView
+        android:id="@+id/reportThumb"
+        android:layout_width="70dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitStart" />
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_toRightOf="@id/reportThumb"
+	    android:layout_marginBottom="2dp"
+	    android:layout_marginLeft="2dp"
+	    android:layout_marginRight="2dp"
+	    android:layout_marginTop="2dp"
+        android:orientation="vertical" >
+        
+        <TextView
+            android:id="@+id/reportText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="This is sample report data, this is not real data and I only have words here to test layout."
+            android:textStyle="bold" />
+        
+        <TextView
+            android:id="@+id/reportDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:text="8/25/13 12:15" />
+        
+    </RelativeLayout>
+    
+</RelativeLayout>
