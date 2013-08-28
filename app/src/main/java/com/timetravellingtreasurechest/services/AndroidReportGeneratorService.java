@@ -38,7 +38,7 @@ public class AndroidReportGeneratorService implements IReportGeneratorService {
 		File thumbFile = null;
 		try {
 			File picDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy");
-			File thumbDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/Thumbs");
+			File thumbDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/.thumb");
 			
 			picDir.mkdirs();
 			thumbDir.mkdirs();

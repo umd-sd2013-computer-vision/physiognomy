@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ManageReportActivity extends Activity {
 	
@@ -32,6 +34,16 @@ public class ManageReportActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // back if no sdcard present (cant load images)
+        if (!android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+			Toast toast = Toast.makeText(ServiceServer.getAndroidContext(), "Please insert an SD card", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+			toast.show();
+			finish();
+			return;
+		}
+        
 //        MainActivity.cameraSurfaceView.stopPreview();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_manage_report);

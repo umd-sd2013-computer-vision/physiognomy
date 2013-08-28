@@ -51,6 +51,11 @@
 		    <name>SpringSource Repository</name>
 		    <url>http://repo.springsource.org/release</url>
 		</repository>
+
+		<repository>  
+    			<id>The mavenized Facebook Android API</id>  
+    			<url>http://avianey.github.io/facebook-api-android-maven/</url>  
+  		</repository>  
 	</repositories>
 
 

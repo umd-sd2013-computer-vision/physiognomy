@@ -22,8 +22,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
@@ -35,11 +37,19 @@ public class ReportHistoryActivity extends ListActivity {
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (!android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
+			Toast toast = Toast.makeText(ServiceServer.getAndroidContext(), "Please insert an SD card", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+			toast.show();
+			finish();
+			return;
+		}
+		
 		setContentView(R.layout.activity_report_history);
-		getDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/Thumbs");
+		getDir(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Physiognomy/.thumb");
 	}    
 		
-	private void getDir(String dirPath) {
+	private void getDir(String dirPath) {		
 		reports = new ArrayList<ReportData>();
 		
 		File f = new File(dirPath);
@@ -49,7 +59,8 @@ public class ReportHistoryActivity extends ListActivity {
 		Arrays.sort(files, new Comparator<File>(){
 		    public int compare(File f1, File f2) {
 		        return Long.valueOf(f2.lastModified()).compareTo(f1.lastModified());
-		    } });
+		    } 
+		    });
 
 		for(int i = 0; i < files.length; i++) {
 			File file = files[i];
