@@ -142,7 +142,7 @@ public class ReportData {
 		"Further, you "
 	};
 	
-	public static final int MAX_HEIGHT = 1600;
+	public static final int MAX_HEIGHT = 1200;
 	
 	public String report = "You ";
 	public CvMat image;
