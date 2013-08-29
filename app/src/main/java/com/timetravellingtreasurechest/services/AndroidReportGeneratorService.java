@@ -50,7 +50,7 @@ public class AndroidReportGeneratorService implements IReportGeneratorService {
 			FileOutputStream thumbOut = new FileOutputStream(thumbFile);
 			
 			picture.compress(Bitmap.CompressFormat.JPEG, 80, picOut);
-			Bitmap.createScaledBitmap(picture, 200, 200, true).compress(Bitmap.CompressFormat.JPEG, 80, thumbOut);
+			Bitmap.createScaledBitmap(picture, 125, 125, true).compress(Bitmap.CompressFormat.JPEG, 80, thumbOut);
 			
 			picOut.flush();	picOut.close();
 			thumbOut.flush(); thumbOut.close();
